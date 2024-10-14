@@ -52,11 +52,7 @@ app.get('/all-devices-status', (req, res) => {
 
 
 app.post('/device', (req, res) => {
-<<<<<<< HEAD
     sendPostRequest(devices[req.body.id], req.body.status, req.body.id, res);
-=======
-    sendPostRequest(esps[req.body.id], req.body.status, req.body.id, res);
->>>>>>> 9dee41d65350593624b9cc5aecefb10e55ab845d
 });
 
 app.listen(3001, () => {
