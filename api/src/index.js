@@ -47,7 +47,7 @@ const sendPostRequest = async (localAddress, status, device, res) => {
 }
 
 app.get('/all-devices-status', (req, res) => {
-    
+    res.send(devices);
 });
 
 
