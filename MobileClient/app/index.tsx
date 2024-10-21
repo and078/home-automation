@@ -1,48 +1,48 @@
-import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
-import { Link } from 'expo-router';
-import { useState } from "react";
-
+import { Text, View, StyleSheet, FlatList } from "react-native";
+import { useEffect, useState } from "react";
 import DeviceBox from "@/components/DeviceBox";
 
+interface deviceData {
+	status: Number,
+	name: string,
+	type: string,
+};
 
 export default function Index() {
-	const[state, setState] = useState(0);
-	const[deviceName, setDeviceName] = useState('');
+	const [devices, setDevices] = useState<Array<deviceData>>([]);
 
-	const url = 'https://hmaubck.serveo.net/device';
-	const localUrl = 'http://192.168.1.224:3001/device'
-
-	const sendToServer = async (status: Number) => {
-		try {
-			await fetch(url, {
-				method: 'POST',
-				headers: {
-					'Accept': 'application/json, text/plain, */*',
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ "id": "lolin", "status": status })
-			}).then(response => response.json())
-				.then(response => {
-					console.log(response);
-					setState(response.status);
-					setDeviceName(response.device);
-				})
+	useEffect( () => {
+		const getAlldevices = async () => {
+			const res = await fetch('https://hmaubck.serveo.net/devices-state/');
+			const data = await res.json();
+			console.log("useEffect data", data.data);
+			setDevices(data.data)
 		}
-		catch (err) {
-			console.log(err);
-		}
-	}
-
+		getAlldevices()
+			.catch(console.error)
+	}, [])
 
 	return (
 		<>
 			<View style={styles.container}>
-				<DeviceBox deviceName={deviceName} onpress={sendToServer} state={state}/>
-				<DeviceBox deviceName={deviceName} onpress={sendToServer} state={state}/>
+				<Text style={styles.text}>All devices</Text>
+				<FlatList
+					data={devices}
+					numColumns={3}
+					renderItem={({ item }) => {
+						return (<>
+							<DeviceBox
+								deviceName={item.name}
+								state={item.status}
+								type={item.type}
+							/>
+						</>
+						)
+					}}
+				/>
 			</View>
 		</>
-
-	);
+	)
 }
 
 const styles = StyleSheet.create({
@@ -54,5 +54,7 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		color: '#fff',
+		padding: 10,
+		fontSize: 15,
 	},
 });

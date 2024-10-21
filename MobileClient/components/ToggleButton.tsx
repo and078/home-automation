@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Text, TouchableOpacity, StyleSheet, View, Dimensions } from "react-native";
 
 interface IToggleButton {
-    onpress: (staus: Number) => void,
+    onpress: (status: Number) => void,
 }
 
 export default function ToggleButton(props: IToggleButton) {
-    const [buttonState, setButtonState] = useState(0);
+    const [buttonState, setButtonState] = useState<Number>(0);
 
     const pressHandler = () => {
         buttonState ? setButtonState(0) : setButtonState(1);
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: '#fff',
-        fontSize: 20,
+        fontSize: 15,
         justifyContent: 'center',
         alignItems: 'center',
     },
