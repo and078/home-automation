@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, FlatList } from "react-native";
+import { Text, View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { useEffect, useState } from "react";
 import DeviceBox from "@/components/DeviceBox";
 
@@ -11,21 +11,36 @@ interface deviceData {
 export default function Index() {
 	const [devices, setDevices] = useState<Array<deviceData>>([]);
 
-	useEffect( () => {
-		const getAlldevices = async () => {
-			const res = await fetch('https://hmaubck.serveo.net/devices-state/');
-			const data = await res.json();
-			console.log("useEffect data", data.data);
-			setDevices(data.data)
-		}
-		getAlldevices()
-			.catch(console.error)
+	const MILLISECS: number = 5000;
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			const getAlldevices = async () => {
+				const res = await fetch('https://hmaubck.serveo.net/devices-state/');
+				const data = await res.json();
+				console.log("useEffect data", data.data);
+				setDevices(data.data)
+			}
+			getAlldevices().catch(console.error)
+		}, MILLISECS);
+		return () => clearInterval(interval);
 	}, [])
 
 	return (
 		<>
 			<View style={styles.container}>
-				<Text style={styles.text}>All devices</Text>
+				<TouchableOpacity onPress={() => {}}>
+					<View style={{
+						backgroundColor: "#ecf5f600",
+						margin: 15,
+						borderColor: "white",
+						borderWidth: 1,
+						borderRadius: 20,
+					}}>
+						<Text style={styles.text}>All devices</Text>
+					</View>
+				</TouchableOpacity>
+
 				<FlatList
 					data={devices}
 					numColumns={3}
@@ -54,7 +69,7 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		color: '#fff',
-		padding: 10,
-		fontSize: 15,
+		fontSize: 20,
+		padding: 15,
 	},
 });

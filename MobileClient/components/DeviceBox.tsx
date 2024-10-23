@@ -20,7 +20,7 @@ const DeviceBox = (props: DeviceBoxProps) => {
 
     useEffect(() => {
         setColorByState(props.state);
-    }, []);
+    }, [props.state]);
 
     const toggle = (state: Number) => {
         if (state == 0) return 1;
@@ -60,10 +60,12 @@ const DeviceBox = (props: DeviceBoxProps) => {
                     width: Dimensions.get('window').width / 3 - 15,
                     height: Dimensions.get('window').height / 10,
                     backgroundColor: color,
-                    borderRadius: Dimensions.get('window').height / 30,
+                    borderRadius: Dimensions.get('window').height / 40,
                     justifyContent: 'center',
                     alignItems: 'center',
                     margin: 5,
+                    borderColor: "#14cee6cc",
+                    borderWidth: 1,
                 }}>
                     <Text style={styles.text}>{props.deviceName}</Text>
                 </View>
