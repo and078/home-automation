@@ -5,6 +5,7 @@ interface DeviceBoxProps {
     deviceName: string,
     state: Number,
     type: string,
+    sendStateToIndex: (device: string, state: Number) => void,
 }
 
 const DeviceBox = (props: DeviceBoxProps) => {
@@ -13,9 +14,9 @@ const DeviceBox = (props: DeviceBoxProps) => {
     const [color, setColor] = useState<string>("#423c3fcc");
 
     const setColorByState = (state: Number): void => {
-        if (state == 1) setColor("#0f5055cc");
-        if (state == 0) setColor("#111315");
-        if (state == -1) setColor("#423c3fcc");
+        if (state == 1) setColor("#0f505588");
+        if (state == 0) setColor("#00000055");
+        if (state == -1) setColor("#423c3f55");
     }
 
     useEffect(() => {
@@ -40,8 +41,10 @@ const DeviceBox = (props: DeviceBoxProps) => {
             })
                 .then(response => response.json())
                 .then(response => {
+                    console.log(response);
                     setBoxState(response.status);
                     setColorByState(response.status);
+                    props.sendStateToIndex(response.device, response.status);
                 })
         }
         catch (err) {
