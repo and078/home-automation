@@ -1,20 +1,17 @@
-import DeviceBox from '@/components/DeviceBox';
-import { useEffect, useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native'
+import { View, StyleSheet, Text, ImageBackground, Dimensions } from 'react-native'
+import image from '@/assets/images/house.png'
+
 
 const devices = () => {
 
 	return (
-		<>
-			<View style={styles.container}>
+		<View style={styles.container}>
+			<ImageBackground source={image} style={styles.image}>
 				<Text style={styles.text}>Devices</Text>
-			</View>
-		</>
-
+			</ImageBackground>
+		</View>
 	);
 }
-
-export default devices
 
 const styles = StyleSheet.create({
 	container: {
@@ -22,8 +19,21 @@ const styles = StyleSheet.create({
 		backgroundColor: '#000000',
 		alignItems: 'center',
 		justifyContent: 'center',
+
 	},
 	text: {
 		color: '#fff',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	image: {
+		flex: 1,
+		resizeMode: 'stretch',
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: Dimensions.get('window').width,
+		height: Dimensions.get('window').height,
 	},
 });
+
+export default devices

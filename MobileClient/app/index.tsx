@@ -1,7 +1,8 @@
-import { Text, View, StyleSheet, FlatList, TouchableOpacity, ImageBackground } from "react-native";
+import { Text, View, StyleSheet, FlatList, TouchableOpacity, ImageBackground, Dimensions } from "react-native";
 import { useEffect, useState } from "react";
 import DeviceBox from "@/components/DeviceBox";
-import image from "@/assets/images/home.png";
+import image from "@/assets/images/house.png";
+import VideoViewView from "@/components/VideoViewView";
 
 interface deviceData {
 	status: Number,
@@ -12,19 +13,20 @@ interface deviceData {
 export default function Index() {
 	const [devices, setDevices] = useState<Array<deviceData>>([]);
 
-	const getAlldevices = async () => {
-		const res = await fetch('https://hmaubck.serveo.net/devices-state/');
-		const data = await res.json();
-		console.log("useEffect data", data.data);
-		setDevices(data.data)
-	}
+	const REMOTE_API = 'http://188.237.107.39:3001/devices-state';//'https://hmaubck.serveo.net/devices-state/';
+	const LOCAL_API = 'http://192.168.1.224:3001/devices-state/';
 
-	const handleStateFromDevice = (name: string, status: Number) => {
-		let device = devices.find(d => d.name === name);
-		if(device?.status) {
-			device.status = status;
+	const videoUrl = 'http://188.237.107.39:1234/';
+
+	const getAlldevices = async () => {
+		try {
+			const res = await fetch(REMOTE_API);
+			const data = await res.json();
+			console.log("useEffect data", data.data);
+			setDevices(data.data)
+		} catch (error) {
+			console.log(REMOTE_API, error);
 		}
-		console.log('handleStateFromDevice');
 	}
 
 	useEffect(() => {
@@ -35,6 +37,17 @@ export default function Index() {
 		<>
 			<View style={styles.container}>
 				<ImageBackground source={image} style={styles.image}>
+					<View style={{
+						width: Dimensions.get('window').width - 20,
+						height: Dimensions.get('window').height / 2.8,
+						alignItems: 'center',
+						justifyContent: 'center',
+						borderColor: "#14cee6cc",
+                    	borderWidth: 1,
+						borderRadius: Dimensions.get('window').height / 40,
+					}}>
+						<VideoViewView videoSource = {videoUrl}/>
+					</View>
 					<TouchableOpacity onPress={getAlldevices}>
 						<View style={{
 							backgroundColor: "#ecf5f600",
@@ -51,14 +64,13 @@ export default function Index() {
 
 					<FlatList
 						data={devices}
-						numColumns={3}
+						numColumns={4}
 						renderItem={({ item }) => {
 							return (<>
 								<DeviceBox
 									deviceName={item.name}
 									state={item.status}
 									type={item.type}
-									sendStateToIndex={() => handleStateFromDevice(item.name, item.status)}
 								/>
 							</>
 							)

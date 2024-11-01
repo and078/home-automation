@@ -48,7 +48,19 @@ const devices = [
         type: "toggle",
         url: 'http://192.168.1.181:5555/test',
         state: 0,
-    }
+    },
+    {
+        name: "esp4",
+        type: "toggle",
+        url: 'http://192.168.1.180:5555/test',
+        state: 0,
+    },
+    {
+        name: "esp5",
+        type: "toggle",
+        url: 'http://192.168.1.179:5555/test',
+        state: 0,
+    },
 ]
 
 const requestSpecificDevice = async (device) => {

@@ -5,7 +5,6 @@ interface DeviceBoxProps {
     deviceName: string,
     state: Number,
     type: string,
-    sendStateToIndex: (device: string, state: Number) => void,
 }
 
 const DeviceBox = (props: DeviceBoxProps) => {
@@ -31,7 +30,7 @@ const DeviceBox = (props: DeviceBoxProps) => {
 
     const postToDevice = async (status: Number, name: string) => {
         try {
-            await fetch('https://hmaubck.serveo.net/device', {
+            await fetch('http://188.237.107.39:3001/device', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json, text/plain, */*',
@@ -44,7 +43,7 @@ const DeviceBox = (props: DeviceBoxProps) => {
                     console.log(response);
                     setBoxState(response.status);
                     setColorByState(response.status);
-                    props.sendStateToIndex(response.device, response.status);
+                    // props.sendStateToIndex(response.device, response.status);
                 })
         }
         catch (err) {
@@ -60,8 +59,8 @@ const DeviceBox = (props: DeviceBoxProps) => {
                 }}>
                 <View style={{
                     flex: 1,
-                    width: Dimensions.get('window').width / 3 - 15,
-                    height: Dimensions.get('window').height / 10,
+                    width: Dimensions.get('window').width / 4 - 15,
+                    height: Dimensions.get('window').height / 12,
                     backgroundColor: color,
                     borderRadius: Dimensions.get('window').height / 40,
                     justifyContent: 'center',
