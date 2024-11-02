@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { WebView } from 'react-native-webview';
 
@@ -6,11 +7,20 @@ interface VewViewProps {
 }
 
 const VideoViewView = (props: VewViewProps) => {
+  const webRef = useRef<WebView>(null);
+
+  useEffect(() => {
+    if(webRef.current) {
+      webRef.current.injectJavaScript(`
+        location.reload()
+      `);
+    }
+  }, [webRef]);
+
   return (
     <WebView
         style={styles.webView}
         source={{ uri: props.videoSource }}
-        
       />
   )
 }

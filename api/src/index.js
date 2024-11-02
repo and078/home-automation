@@ -1,8 +1,12 @@
 const express = require('express');
+const https = require('https');
+const fs = require('fs');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+
+const port = 3001;
 
 const app = express();
 
@@ -63,6 +67,14 @@ const devices = [
     },
 ]
 
+var key = fs.readFileSync(__dirname + '/../ssl_crt/selfsigned.key');
+var cert = fs.readFileSync(__dirname + '/../ssl_crt/selfsigned.crt');
+
+var options = {
+    key: key,
+    cert: cert
+};
+
 const requestSpecificDevice = async (device) => {
     try {
         const response = await fetch(device.url, { signal: AbortSignal.timeout(300) });
@@ -70,7 +82,9 @@ const requestSpecificDevice = async (device) => {
             return await response.json();
         }
     } catch (error) {
-        console.error("Fucking error: ", error);
+        console.error("SpecificDevice error: ", error.message
+
+        );
         return { status: -1, name: device.name, type: device.type };
     }
 }
@@ -120,6 +134,12 @@ app.post('/device', (req, res) => {
     sendPostRequest(url, req.body.status, req.body.id, res);
 });
 
-app.listen(3001, () => {
-    console.log('listening on port 3001');
+app.listen(port, () => {
+    console.log(`server listening on port ${port}`);
 });
+
+// var server = https.createServer(options, app);
+
+// server.listen(port, () => {
+//     console.log(`server listening on port ${port}`);
+// });

@@ -4,6 +4,7 @@ import DeviceBox from "@/components/DeviceBox";
 import image from "@/assets/images/house.png";
 import VideoViewView from "@/components/VideoViewView";
 
+
 interface deviceData {
 	status: Number,
 	name: string,
@@ -13,10 +14,10 @@ interface deviceData {
 export default function Index() {
 	const [devices, setDevices] = useState<Array<deviceData>>([]);
 
-	const REMOTE_API = 'http://188.237.107.39:3001/devices-state';//'https://hmaubck.serveo.net/devices-state/';
-	const LOCAL_API = 'http://192.168.1.224:3001/devices-state/';
-
+	const REMOTE_API = 'http://188.237.107.39:3001/devices-state';
 	const videoUrl = 'http://188.237.107.39:1234/';
+
+
 
 	const getAlldevices = async () => {
 		try {
@@ -25,7 +26,7 @@ export default function Index() {
 			console.log("useEffect data", data.data);
 			setDevices(data.data)
 		} catch (error) {
-			console.log(REMOTE_API, error);
+			console.log(error);
 		}
 	}
 
@@ -37,17 +38,20 @@ export default function Index() {
 		<>
 			<View style={styles.container}>
 				<ImageBackground source={image} style={styles.image}>
-					<View style={{
-						width: Dimensions.get('window').width - 20,
-						height: Dimensions.get('window').height / 2.8,
-						alignItems: 'center',
-						justifyContent: 'center',
-						borderColor: "#14cee6cc",
-                    	borderWidth: 1,
-						borderRadius: Dimensions.get('window').height / 40,
-					}}>
-						<VideoViewView videoSource = {videoUrl}/>
-					</View>
+					<TouchableOpacity>
+						<View style={{
+							width: Dimensions.get('window').width - 20,
+							height: Dimensions.get('window').height / 2.8,
+							alignItems: 'center',
+							justifyContent: 'center',
+							borderColor: "#14cee6cc",
+							borderWidth: 1,
+							borderRadius: Dimensions.get('window').height / 40,
+						}}>
+							<VideoViewView videoSource={videoUrl} />
+						</View>
+					</TouchableOpacity>
+
 					<TouchableOpacity onPress={getAlldevices}>
 						<View style={{
 							backgroundColor: "#ecf5f600",

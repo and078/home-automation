@@ -17,9 +17,10 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/house-blueprint.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.and078.MobileClient"
     },
     "web": {
       "bundler": "metro",
@@ -28,10 +29,15 @@
     },
     "plugins": [
       "expo-router",
-      "expo-video"
+      "expo-build-properties", { "android": { "usesCleartextTraffic": true } }
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f2221d17-4fd9-44b2-b00d-758561b6e566"
+      }
     }
   }
 }
