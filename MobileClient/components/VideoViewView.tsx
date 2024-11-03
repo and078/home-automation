@@ -1,42 +1,65 @@
-import { useEffect, useRef } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Text, View, StyleSheet, TouchableOpacity, Dimensions, Button } from 'react-native';
 import { WebView } from 'react-native-webview';
+import ViewError from '@/components/ViewError'
 
 interface VewViewProps {
-    videoSource: string,
+  videoSource: string,
 }
 
 const VideoViewView = (props: VewViewProps) => {
   const webRef = useRef<WebView>(null);
 
-  useEffect(() => {
-    if(webRef.current) {
-      webRef.current.injectJavaScript(`
-        location.reload()
-      `);
-    }
-  }, [webRef]);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [key, setKey] = useState<bigint>(0n);
+
+  const handleWebViewError = () => {
+    setIsError(true);
+  };
+
+  const reloadWebView = () => {
+    setKey(key + 1n); 
+    setIsError(false);
+  };
 
   return (
-    <WebView
-        style={styles.webView}
-        source={{ uri: props.videoSource }}
-      />
+    <>
+      {isError ? (
+        <TouchableOpacity onPress={reloadWebView}>
+          <Text style={styles.text}>
+          Reload
+          </Text>
+        </TouchableOpacity>
+      ) : (
+        <WebView
+          style={styles.webView}
+          source={{ uri: props.videoSource }}
+          ref={webRef}
+          key={key}
+          onError={handleWebViewError}
+          renderError={e => <ViewError name={e} />}
+        />
+      )}
+        
+    </>
   )
 }
 
 const styles = StyleSheet.create({
-    webView: {
-      width: Dimensions.get('window').width - 60,
-      height: Dimensions.get('window').height,
-      justifyContent: 'center',
-      alignItems: 'center',
-      flex: 1,
-    },
+  webView: {
+    backgroundColor: "black",
+    width: Dimensions.get('window').width - 60,
+    height: Dimensions.get('window').height,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
 
-    container: {
-      
-    } 
-  });
+  text: {
+    color: '#fff',
+    fontSize: 20,
+    padding: 15,
+  },
+});
 
 export default VideoViewView
