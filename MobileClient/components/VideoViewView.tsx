@@ -1,42 +1,49 @@
-import { useEffect, useRef } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, Dimensions } from 'react-native';
 import { WebView } from 'react-native-webview';
+import ViewError from '@/components/ViewError'
 
 interface VewViewProps {
-    videoSource: string,
+  videoSource: string,
 }
 
 const VideoViewView = (props: VewViewProps) => {
-  const webRef = useRef<WebView>(null);
+  const [key, setKey] = useState<bigint>(0n);
 
-  useEffect(() => {
-    if(webRef.current) {
-      webRef.current.injectJavaScript(`
-        location.reload()
-      `);
-    }
-  }, [webRef]);
+  const handleWebViewError = () => {
+    setTimeout(() => {
+      setKey(key + 1n);
+    }, 1000);
+  };
 
   return (
-    <WebView
+    <>
+      <WebView
         style={styles.webView}
         source={{ uri: props.videoSource }}
+        key={key}
+        onError={handleWebViewError}
+        renderError={e => <ViewError name={e} />}
       />
+    </>
   )
 }
 
 const styles = StyleSheet.create({
-    webView: {
-      width: Dimensions.get('window').width - 60,
-      height: Dimensions.get('window').height,
-      justifyContent: 'center',
-      alignItems: 'center',
-      flex: 1,
-    },
+  webView: {
+    backgroundColor: "black",
+    width: Dimensions.get('window').width - 60,
+    height: Dimensions.get('window').height,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
 
-    container: {
-      
-    } 
-  });
+  text: {
+    color: '#fff',
+    fontSize: 20,
+    padding: 15,
+  },
+});
 
 export default VideoViewView

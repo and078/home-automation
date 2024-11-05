@@ -15,9 +15,7 @@ export default function Index() {
 	const [devices, setDevices] = useState<Array<deviceData>>([]);
 
 	const REMOTE_API = 'http://188.237.107.39:3001/devices-state';
-	const videoUrl = 'http://188.237.107.39:1234/';
-
-
+	const STREAM_URL = 'http://188.237.107.39:1234/';
 
 	const getAlldevices = async () => {
 		try {
@@ -38,7 +36,7 @@ export default function Index() {
 		<>
 			<View style={styles.container}>
 				<ImageBackground source={image} style={styles.image}>
-					<TouchableOpacity>
+					
 						<View style={{
 							width: Dimensions.get('window').width - 20,
 							height: Dimensions.get('window').height / 2.8,
@@ -48,9 +46,8 @@ export default function Index() {
 							borderWidth: 1,
 							borderRadius: Dimensions.get('window').height / 40,
 						}}>
-							<VideoViewView videoSource={videoUrl} />
+							<VideoViewView videoSource={STREAM_URL} />
 						</View>
-					</TouchableOpacity>
 
 					<TouchableOpacity onPress={getAlldevices}>
 						<View style={{
