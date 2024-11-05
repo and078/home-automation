@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Dimensions, Button } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, Dimensions } from 'react-native';
 import { WebView } from 'react-native-webview';
 import ViewError from '@/components/ViewError'
 
@@ -8,39 +8,23 @@ interface VewViewProps {
 }
 
 const VideoViewView = (props: VewViewProps) => {
-  const webRef = useRef<WebView>(null);
-
-  const [isError, setIsError] = useState<boolean>(false);
   const [key, setKey] = useState<bigint>(0n);
 
   const handleWebViewError = () => {
-    setIsError(true);
-  };
-
-  const reloadWebView = () => {
-    setKey(key + 1n); 
-    setIsError(false);
+    setTimeout(() => {
+      setKey(key + 1n);
+    }, 1000);
   };
 
   return (
     <>
-      {isError ? (
-        <TouchableOpacity onPress={reloadWebView}>
-          <Text style={styles.text}>
-          Reload
-          </Text>
-        </TouchableOpacity>
-      ) : (
-        <WebView
-          style={styles.webView}
-          source={{ uri: props.videoSource }}
-          ref={webRef}
-          key={key}
-          onError={handleWebViewError}
-          renderError={e => <ViewError name={e} />}
-        />
-      )}
-        
+      <WebView
+        style={styles.webView}
+        source={{ uri: props.videoSource }}
+        key={key}
+        onError={handleWebViewError}
+        renderError={e => <ViewError name={e} />}
+      />
     </>
   )
 }
