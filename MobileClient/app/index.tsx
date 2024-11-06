@@ -2,7 +2,8 @@ import { Text, View, StyleSheet, FlatList, TouchableOpacity, ImageBackground, Di
 import { useEffect, useState } from "react";
 import DeviceBox from "@/components/DeviceBox";
 import image from "@/assets/images/house.png";
-import VideoViewView from "@/components/VideoViewView";
+import VideoWebView from "@/components/VideoWebView";
+import VideoDevice from "@/components/VideoDevice";
 
 
 interface deviceData {
@@ -11,11 +12,25 @@ interface deviceData {
 	type: string,
 };
 
+interface videoDeviceData {
+	name: string,
+	url: string,
+	type: string,
+}
+
+interface pressedDevice {
+	name: string,
+	url: string
+}
+
+const REMOTE_API = 'http://188.237.107.39:3001/devices-state';
+const STREAM_API = 'http://188.237.107.39:3001/video-devices/';
+
 export default function Index() {
 	const [devices, setDevices] = useState<Array<deviceData>>([]);
-
-	const REMOTE_API = 'http://188.237.107.39:3001/devices-state';
-	const STREAM_URL = 'http://188.237.107.39:1234/';
+	const [videoDevices, setVideoDevices] = useState<Array<videoDeviceData>>([]);
+	const [showWebView, setShowWebView] = useState<boolean>(false);
+	const [pressedDevice, setPressedDevice] = useState<pressedDevice>({name: '', url: ''});
 
 	const getAlldevices = async () => {
 		try {
@@ -28,15 +43,46 @@ export default function Index() {
 		}
 	}
 
+	const getAllVideoDevices = async () => {
+		try {
+			const res = await fetch(STREAM_API);
+			const data = await res.json();
+			setVideoDevices(data.data);
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
 	useEffect(() => {
-		getAlldevices()
+		getAlldevices();
+		getAllVideoDevices();
 	}, [])
+
 
 	return (
 		<>
 			<View style={styles.container}>
 				<ImageBackground source={image} style={styles.image}>
-					
+					{!showWebView ? (
+						<FlatList
+							data={videoDevices}
+							numColumns={4}
+							renderItem={({ item }) => {
+								return (
+									<>
+										<VideoDevice
+											name={item.name}
+											url={item.url}
+											sendStateToIndex={(pressed, name) => {
+												setShowWebView(pressed);
+												setPressedDevice({name: item.name, url: item.url});
+											}}
+										/>
+									</>
+								)
+							}}
+						/>
+					) : (
 						<View style={{
 							width: Dimensions.get('window').width - 20,
 							height: Dimensions.get('window').height / 2.8,
@@ -46,8 +92,14 @@ export default function Index() {
 							borderWidth: 1,
 							borderRadius: Dimensions.get('window').height / 40,
 						}}>
-							<VideoViewView videoSource={STREAM_URL} />
+							<VideoWebView 
+								name={pressedDevice.name} 
+								url={pressedDevice.url} 
+								sendState={(pressed) => {
+									setShowWebView(pressed);
+								}}/>
 						</View>
+					)}
 
 					<TouchableOpacity onPress={getAlldevices}>
 						<View style={{
@@ -67,16 +119,18 @@ export default function Index() {
 						data={devices}
 						numColumns={4}
 						renderItem={({ item }) => {
-							return (<>
-								<DeviceBox
-									deviceName={item.name}
-									state={item.status}
-									type={item.type}
-								/>
-							</>
+							return (
+								<>
+									<DeviceBox
+										deviceName={item.name}
+										state={item.status}
+										type={item.type}
+									/>
+								</>
 							)
 						}}
 					/>
+
 				</ImageBackground>
 			</View>
 		</>

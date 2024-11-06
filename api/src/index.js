@@ -1,25 +1,21 @@
 const express = require('express');
-const https = require('https');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 
-const port = 3001;
+const PORT = 3001;
+const ABORT_SIGNAL_TIMEOUT = 200;
 
 const app = express();
 
-// adding Helmet to enhance your API's security
 app.use(helmet());
 
-// using bodyParser to parse JSON bodies into JS objects
 app.use(bodyParser.json());
 
-// enabling CORS for all requests
 app.use(cors());
 
-// adding morgan to log HTTP requests
 app.use(morgan('combined'));
 
 const devices = [
@@ -67,24 +63,37 @@ const devices = [
     },
 ]
 
-var key = fs.readFileSync(__dirname + '/../ssl_crt/selfsigned.key');
-var cert = fs.readFileSync(__dirname + '/../ssl_crt/selfsigned.crt');
-
-var options = {
-    key: key,
-    cert: cert
-};
+const videoDevices = [
+    {
+        name: "street-cam",
+        type: "video",
+        url: "http://188.237.107.39:1234/"
+    },
+    {
+        name: "flat-cam",
+        type: "video",
+        url: "http://188.237.107.39:1235/"
+    },
+    {
+        name: "back-cam",
+        type: "video",
+        url: "http://188.237.107.39:1236/"
+    },
+    {
+        name: "test-cam",
+        type: "video",
+        url: "http://188.237.107.39:1237/"
+    }
+]
 
 const requestSpecificDevice = async (device) => {
     try {
-        const response = await fetch(device.url, { signal: AbortSignal.timeout(300) });
+        const response = await fetch(device.url, { signal: AbortSignal.timeout(ABORT_SIGNAL_TIMEOUT) });
         if (response.ok) {
             return await response.json();
         }
     } catch (error) {
-        console.error("SpecificDevice error: ", error.message
-
-        );
+        console.error("SpecificDevice error: ", error.message);
         return { status: -1, name: device.name, type: device.type };
     }
 }
@@ -96,6 +105,15 @@ const requestAllDevices = async () => {
     }
     return arr;
 }
+
+const requestVideoDevices = async () => {
+    const arr = [];
+    for(let i = 0; i < videoDevices.length; i++) {
+        arr.push((videoDevices[i]));
+    }
+    return arr;
+}
+
 
 const handleResponseFromEsp = (response, device, res) => {
     res.send({
@@ -113,7 +131,7 @@ const sendPostRequest = async (localAddress, status, device, res) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ status: status }),
-            signal: AbortSignal.timeout(300)
+            signal: AbortSignal.timeout(ABORT_SIGNAL_TIMEOUT)
         })
             .then(response => response.json())
             .then(data => {
@@ -129,17 +147,15 @@ app.get('/devices-state', async (req, res) => {
     res.send({data: await requestAllDevices()});
 });
 
+app.get('/video-devices', async (req, res) => {
+    res.send({data: await requestVideoDevices()});
+});
+
 app.post('/device', (req, res) => {
     let url = devices.find(d => d.name === req.body.id).url;
     sendPostRequest(url, req.body.status, req.body.id, res);
 });
 
-app.listen(port, () => {
-    console.log(`server listening on port ${port}`);
+app.listen(PORT, () => {
+    console.log(`server listening on port ${PORT}`);
 });
-
-// var server = https.createServer(options, app);
-
-// server.listen(port, () => {
-//     console.log(`server listening on port ${port}`);
-// });
