@@ -1,3 +1,4 @@
+import sys
 import time
 from io import BytesIO
 from PIL import Image
@@ -5,7 +6,9 @@ from flask import Flask, Response
 from base64 import b64encode
 app = Flask(__name__)
 
-@app.route('/')
+PORT = int(sys.argv[1])
+
+@app.route('/specific-camera-websocket-stream')
 def index():
     return Response(get_image(), mimetype='multipart/x-mixed-replace; boundary=frame')\
 

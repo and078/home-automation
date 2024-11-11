@@ -1,5 +1,5 @@
 const express = require('express');
-const fs = require('fs');
+// const fs = require('fs');
 const { exec } = require('node:child_process');
 var path = require('path');
 
@@ -47,70 +47,21 @@ const devices = [
 		type: "toggle",
 		url: 'http://192.168.1.182:5555/test',
 		state: 0,
-	},
-	{
-		name: "esp3",
-		type: "toggle",
-		url: 'http://192.168.1.181:5555/test',
-		state: 0,
-	},
-	{
-		name: "esp4",
-		type: "toggle",
-		url: 'http://192.168.1.180:5555/test',
-		state: 0,
-	},
-	{
-		name: "esp5",
-		type: "toggle",
-		url: 'http://192.168.1.179:5555/test',
-		state: 0,
-	},
+	}
 ]
 
 const videoDevices = [
 	{
 		name: "street-cam",
 		type: "video",
-		url: "http://188.237.107.39:1234/"
+		url: "http://188.237.107.39:1234/specific-camera-websocket-stream"
 	},
 	{
 		name: "flat-cam",
 		type: "video",
-		url: "http://188.237.107.39:1235/"
-	},
-	{
-		name: "back-cam",
-		type: "video",
-		url: "http://188.237.107.39:1236/"
-	},
-	{
-		name: "test-cam",
-		type: "video",
-		url: "http://188.237.107.39:1237/"
-	},
-	{
-		name: "cam",
-		type: "video",
-		url: "http://188.237.107.39:1238/"
-	},
-	{
-		name: "cam1",
-		type: "video",
-		url: "http://188.237.107.39:1239/"
-	},
-	{
-		name: "cam2",
-		type: "video",
-		url: "http://188.237.107.39:1240/"
-	},
-	{
-		name: "cam3",
-		type: "video",
-		url: "http://188.237.107.39:1241/"
+		url: "http://188.237.107.39:1234/specific-camera-websocket-stream"
 	}
 ]
-
 
 
 const requestSpecificDevice = async (device) => {
@@ -169,25 +120,24 @@ const requestToESP = async (localAddress, status, device, res) => {
 	}
 }
 
-const startStream = (id) => {
-	exec(`${PARENT_PATH}/bash-scripts/run-stream.sh`, (err, stdout, stderr) => {
+const startStream = (port) => {
+	exec(`${PARENT_PATH}/bash-scripts/run-stream.sh ${port}`, (err, stdout, stderr) => {
 
 		if (err) {
 			console.error('error: ', err)
 		} else {
-			console.log(id);
+			console.log(port);
 			console.log(`stdout: ${stdout}`);
 			console.log(`stderr: ${stderr}`);
 		}
 	})
 }
 
-const stopStream = (id) => {
+const stopStream = () => {
 	exec(`${PARENT_PATH}/bash-scripts/kill-stream.sh`, (err, stdout, stderr) => {
 		if (err) {
 			console.error('error: ', err)
 		} else {
-			console.log(id);
 			console.log(`stdout: ${stdout}`)
 			console.log(`stderr: ${stderr}`);
 		}
@@ -202,14 +152,13 @@ app.get('/video-devices', async (req, res) => {
 	res.send({ data: await requestVideoDevices() });
 });
 
-app.get('/start-stream/:id', (req, res) => {
-	startStream(req.params.id);
-	res.send({ "id": req.params.id });
+app.get('/start-stream/:port', (req, res) => {
+	startStream(req.params.port);
+	res.send({ "port": req.params.port });
 })
 
-app.get('/stop-stream/:id', (req, res) => {
-	stopStream(req.params.id);
-	res.send({ "id": req.params.id });
+app.get('/stop-stream/', (req, res) => {
+	stopStream();
 })
 
 app.post('/device', (req, res) => {

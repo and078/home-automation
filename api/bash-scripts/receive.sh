@@ -5,7 +5,7 @@ PYTHON_SCRIPT="/home/pi_server/repositories/home-automation/esp32_camera_webstre
 
 tmux new-session -d -s "$SESSION_NAME"
 
-tmux send-keys -t "$SESSION_NAME" "python3 $PYTHON_SCRIPT" C-m
+tmux send-keys -t "$SESSION_NAME" "python3 $PYTHON_SCRIPT $1" C-m
 
 tmux detach -s "$SESSION_NAME"
 
