@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, Dimensions, Text, TouchableOpacity, View } from 'react-native';
 import { WebView } from 'react-native-webview';
-import ViewError from '@/components/ViewError'
+import ViewError from '@/components/VideoCams/ViewError'
 
 interface VewViewProps {
   name: string,
@@ -10,6 +10,8 @@ interface VewViewProps {
 }
 
 const VideoWebView = (props: VewViewProps) => {
+  console.log("VideoWebView()");
+  
   const [key, setKey] = useState<bigint>(0n);
 
   const handleWebViewError = () => {

@@ -6,6 +6,8 @@ interface IToggleButton {
 }
 
 export default function ToggleButton(props: IToggleButton) {
+    console.log("ToggleButton()");
+    
     const [buttonState, setButtonState] = useState<Number>(0);
 
     const pressHandler = () => {

@@ -1,5 +1,4 @@
 const express = require('express');
-// const fs = require('fs');
 const { exec } = require('node:child_process');
 var path = require('path');
 
@@ -54,12 +53,14 @@ const videoDevices = [
 	{
 		name: "street-cam",
 		type: "video",
-		url: "http://188.237.107.39:1234/specific-camera-websocket-stream"
+		url: "http://188.237.107.39:1234/specific-camera-websocket-stream",
+		ws_server_port: 3003,
 	},
 	{
 		name: "flat-cam",
 		type: "video",
-		url: "http://188.237.107.39:1234/specific-camera-websocket-stream"
+		url: "http://188.237.107.39:1234/specific-camera-websocket-stream",
+		ws_server_port: 3004,
 	}
 ]
 
@@ -159,6 +160,7 @@ app.get('/start-stream/:port', (req, res) => {
 
 app.get('/stop-stream/', (req, res) => {
 	stopStream();
+	res.send({message: "Strean server was killed"});
 })
 
 app.post('/device', (req, res) => {

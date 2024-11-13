@@ -8,7 +8,7 @@ interface DeviceBoxProps {
 }
 
 const DeviceBox = (props: DeviceBoxProps) => {
-
+	console.log("DeviceBox()");
 	const [boxState, setBoxState] = useState<Number>(props.state);
 	const [color, setColor] = useState<string>("#423c3fcc");
 

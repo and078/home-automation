@@ -2,7 +2,8 @@ import { Text, View, StyleSheet, TouchableOpacity, Dimensions, ImageBackground }
 import image from '@/assets/images/house.png'
 
 export const Video = () => {
-
+  console.log("VIDEO");
+  
   return (
     <View style={styles.container}>
       <ImageBackground source={image} style={styles.image}>

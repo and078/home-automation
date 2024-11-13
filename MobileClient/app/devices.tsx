@@ -3,7 +3,8 @@ import image from '@/assets/images/house.png'
 
 
 const devices = () => {
-
+	console.log("DEVICES");
+	
 	return (
 		<View style={styles.container}>
 			<ImageBackground source={image} style={styles.image}>

@@ -1,11 +1,12 @@
 #!/bin/bash
 
 SESSION_NAME="python_receive_stream"
-PYTHON_SCRIPT="/home/pi_server/repositories/home-automation/esp32_camera_webstream/video-stream-server/receive_stream.py"
+PATH_TO_SCRIPT="/home/pi_server/repositories/home-automation/esp32_camera_webstream/video-stream-server/"
+PYTHON_SCRIPT="receive_stream.py"
 
 tmux new-session -d -s "$SESSION_NAME"
 
-tmux send-keys -t "$SESSION_NAME" "python3 $PYTHON_SCRIPT $1" C-m
+tmux send-keys -t "$SESSION_NAME" "python3 $PATH_TO_SCRIPT$PYTHON_SCRIPT $1" C-m
 
 tmux detach -s "$SESSION_NAME"
 
