@@ -5,7 +5,7 @@ import VideoDevices from "@/components/VideoCams/VideoDevices";
 
 export default function Index() {
 	console.log("Index()");
-	
+
 	return (
 		<>
 			<View style={styles.container}>

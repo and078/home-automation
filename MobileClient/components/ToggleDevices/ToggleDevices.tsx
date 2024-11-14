@@ -15,7 +15,9 @@ const ToggleDevices = () => {
 	const [devices, setDevices] = useState<Array<deviceData>>([]);
 
 	useEffect(() => {
-		getAlldevices();
+		setTimeout(() => {
+			getAlldevices();
+		}, 500);
 	}, [])
 
 	const getAlldevices = async () => {

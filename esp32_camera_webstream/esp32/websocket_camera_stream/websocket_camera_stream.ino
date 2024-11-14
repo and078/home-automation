@@ -29,17 +29,17 @@
 
 
 
-const char* ssid     = "ssid"; // CHANGE HERE
-const char* password = "password"; // CHANGE HERE
+const char* ssid     = "ssid";
+const char* password = "password";
 
-IPAddress local_IP(192, 168, 1, 210);       // Set your desired IP
-IPAddress gateway(192, 168, 1, 1);          // Set your network gateway
-IPAddress subnet(255, 255, 255, 0);         // Set your subnet mask
-IPAddress primaryDNS(8, 8, 8, 8);           // Optional: Primary DNS
-IPAddress secondaryDNS(8, 8, 4, 4);         // Optional: Secondary DNS
+IPAddress local_IP(192, 168, 1, 210); //set camera static ip
+IPAddress gateway(192, 168, 1, 1);          
+IPAddress subnet(255, 255, 255, 0);         
+IPAddress primaryDNS(8, 8, 8, 8);           
+IPAddress secondaryDNS(8, 8, 4, 4);         
 
-const char* websockets_server_host = "host"; //CHANGE HERE
-const uint16_t websockets_server_port = 3003; // OPTIONAL CHANGE
+const char* websockets_server_host = "host";
+const uint16_t websockets_server_port = 3003;
 
 camera_fb_t * fb = NULL;
 size_t _jpg_buf_len = 0;
@@ -52,6 +52,10 @@ WebsocketsClient client;
 void onMessageCallback(WebsocketsMessage message) {
   Serial.print("Got Message: ");
   Serial.println(message.data());
+
+  if (message.data() == "restart") {
+    ESP.restart();
+  }
 }
 
 esp_err_t init_camera() {
@@ -97,6 +101,11 @@ esp_err_t init_camera() {
 
 
 esp_err_t init_wifi() {
+  if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {
+    Serial.println("Failed to configure Static IP!");
+    return ESP_FAIL;
+  }
+
   WiFi.begin(ssid, password);
   Serial.println("Wifi init ");
   while (WiFi.status() != WL_CONNECTED) {
@@ -143,7 +152,7 @@ void loop() {
       ESP.restart();
     }
     client.sendBinary((const char*) fb->buf, fb->len);
-    Serial.println("image sent");
+    Serial.println(fb->len);
     esp_camera_fb_return(fb);
     client.poll();
   }else {
