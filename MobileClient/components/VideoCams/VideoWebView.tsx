@@ -2,15 +2,17 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, Dimensions, Text, TouchableOpacity, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import ViewError from '@/components/VideoCams/ViewError'
+import { STREAM_API } from "@env";
 
 interface VewViewProps {
   name: string,
-  url: string,
+  ip: string,
   sendState: (pressed: boolean) => void,
 }
 
 const VideoWebView = (props: VewViewProps) => {
   console.log("VideoWebView()");
+  // console.log(STREAM_API);
   
   const [key, setKey] = useState<bigint>(0n);
 
@@ -30,7 +32,7 @@ const VideoWebView = (props: VewViewProps) => {
         <Text style={styles.text}>{props.name}</Text>
         <WebView
           style={styles.webView}
-          source={{ uri: props?.url }}
+          source={{ uri: STREAM_API }}
           key={key}
           onError={handleWebViewError}
           renderError={e => <ViewError name={e} />}

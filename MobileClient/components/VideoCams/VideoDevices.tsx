@@ -2,27 +2,25 @@ import { Text, View, StyleSheet, FlatList, TouchableOpacity, ImageBackground, Di
 import React, { useEffect, useState } from 'react'
 import VideoDevice from "./VideoDevice";
 import VideoWebView from "./VideoWebView";
-import { STREAM_API, START_STREAM, STOP_STREAM} from "@env";
+import { VIDEO_DEVICES_API, START_STREAM, STOP_STREAM } from "@env";
 
 interface videoDeviceData {
 	name: string,
-	url: string,
+	ip: string,
 	type: string,
 	ws_server_port: Number
 };
 
 interface pressedDevice {
 	name: string,
-	url: string
+	ip: string
 };
 
 const VideoDevices = () => {
 	console.log("VideoDevices()");
-	
-
 	const [videoDevices, setVideoDevices] = useState<Array<videoDeviceData>>([]);
 	const [showWebView, setShowWebView] = useState<boolean>(false);
-	const [pressedDevice, setPressedDevice] = useState<pressedDevice>({ name: '', url: '' });
+	const [pressedDevice, setPressedDevice] = useState<pressedDevice>({ name: '', ip: '' });
 
 	useEffect(() => {
 		getAllVideoDevices();
@@ -30,7 +28,7 @@ const VideoDevices = () => {
 
 	const getAllVideoDevices = async () => {
 		try {
-			const res = await fetch(STREAM_API);
+			const res = await fetch(VIDEO_DEVICES_API);
 			const data = await res.json();
 			setVideoDevices(data.data);
 		} catch (error) {
@@ -59,38 +57,38 @@ const VideoDevices = () => {
 	return (
 		<>
 			{!showWebView ? (
-						<View style={styles.video_devices}>
-							<Text style={styles.text}>Video devices</Text>
-							<FlatList
-								data={videoDevices}
-								numColumns={4}
-								renderItem={({ item }) => {
-									return (
-										<>
-											<VideoDevice
-												name={item.name}
-												url={item.url}
-												sendStateToIndex={(pressed) => {
-													turnOnStream(item.ws_server_port);
-													setShowWebView(pressed);
-													setPressedDevice({ name: item.name, url: item.url });
-												}} />
-										</>
-									);
-								}} /></View>
-					) : (
-						<View style={styles.devices}>
-							<VideoWebView
-								name={pressedDevice.name}
-								url={pressedDevice.url}
-								sendState={(pressed) => {
-									turnOffStream();
-									setShowWebView(pressed);
-								}} />
-						</View>
-					)}
+				<View style={styles.video_devices}>
+					<Text style={styles.text}>Video devices</Text>
+					<FlatList
+						data={videoDevices}
+						numColumns={4}
+						renderItem={({ item }) => {
+							return (
+								<>
+									<VideoDevice
+										name={item.name}
+										url={item.ip}
+										sendStateToIndex={(pressed) => {
+											turnOnStream(item.ws_server_port);
+											setShowWebView(pressed);
+											setPressedDevice({ name: item.name, ip: item.ip });
+										}} />
+								</>
+							);
+						}} /></View>
+			) : (
+				<View style={styles.devices}>
+					<VideoWebView
+						name={pressedDevice.name}
+						ip={pressedDevice.ip}
+						sendState={(pressed) => {
+							turnOffStream();
+							setShowWebView(pressed);
+						}} />
+				</View>
+			)}
 		</>
-  )
+	)
 }
 
 export default VideoDevices;

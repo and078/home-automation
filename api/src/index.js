@@ -11,6 +11,8 @@ const PORT = 3001;
 const ABORT_SIGNAL_TIMEOUT = 200;
 const PARENT_PATH = path.dirname(__dirname);
 
+const IP_NEIGH_FLUSH_ALL = 'sudo ip -s -s neigh flush all';
+// const IP_NEIGH = 'sudo ip neigh';
 
 const app = express();
 
@@ -53,16 +55,44 @@ const videoDevices = [
 	{
 		name: "street-cam",
 		type: "video",
-		url: "http://188.237.107.39:1234/specific-camera-websocket-stream",
+		ip: "http://192.168.1.210",
 		ws_server_port: 3003,
+		status: 0,
+        //url: 'http://188.237.107.39:1234/specific-camera-websocket-stream'
 	},
 	{
 		name: "flat-cam",
 		type: "video",
-		url: "http://188.237.107.39:1234/specific-camera-websocket-stream",
+		ip: "http://192.168.1.211",
 		ws_server_port: 3004,
+		status: 0,
 	}
 ]
+
+let activeDevices = [];
+
+const parseStdOut = (out) => {
+	let devices = out
+		.split('\n\n')[0]
+		.split('\n')
+		.filter(d => d.includes('REACHABLE'));
+	let ips = devices.map(d => d.split(' ')[0]);
+	return ips;
+}
+
+const getActiveCameras = async () => {
+
+	exec(IP_NEIGH_FLUSH_ALL, async (err, stdout, stderr) => {
+		if (err) {
+			console.error('error: ', err)
+		} else {
+			activeDevices = parseStdOut(stdout);
+			if(stderr) console.log(`stderr: ${stderr}`);
+		}
+	})
+
+}
+
 
 
 const requestSpecificDevice = async (device) => {
@@ -85,9 +115,13 @@ const requestAllDevices = async () => {
 	return arr;
 }
 
-const requestVideoDevices = async () => {
+const requestVideoDevices = async (activeDevices) => {
+	await getActiveCameras();
 	const arr = [];
 	for (let i = 0; i < videoDevices.length; i++) {
+		activeDevices.forEach(d => {
+			if (`http://${d}` === videoDevices[i].ip) videoDevices[i].status = 1;
+		})
 		arr.push((videoDevices[i]));
 	}
 	return arr;
@@ -150,7 +184,8 @@ app.get('/devices-state', async (req, res) => {
 });
 
 app.get('/video-devices', async (req, res) => {
-	res.send({ data: await requestVideoDevices() });
+	console.log(activeDevices);
+	res.send({ data: await requestVideoDevices(activeDevices) });
 });
 
 app.get('/start-stream/:port', (req, res) => {

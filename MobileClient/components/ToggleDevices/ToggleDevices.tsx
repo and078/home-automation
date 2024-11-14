@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, FlatList, TouchableOpacity, ImageBackground, Dimensions } from "react-native";
 import { useEffect, useState } from "react";
 import DeviceBox from "./DeviceBox";
-import { REMOTE_API } from "@env";
+import { TOGGLE_DEVICES_STATE_API } from "@env";
 
 interface deviceData {
 	status: Number,
@@ -11,18 +11,18 @@ interface deviceData {
 
 const ToggleDevices = () => {
 	console.log("ToggleDevices()");
-	
+
 	const [devices, setDevices] = useState<Array<deviceData>>([]);
 
 	useEffect(() => {
 		setTimeout(() => {
 			getAlldevices();
-		}, 500);
+		}, 2000);
 	}, [])
 
 	const getAlldevices = async () => {
 		try {
-			const res = await fetch(REMOTE_API);
+			const res = await fetch(TOGGLE_DEVICES_STATE_API);
 			const data = await res.json();
 			setDevices(data.data);
 		} catch (error) {
