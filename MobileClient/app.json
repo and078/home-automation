@@ -1,6 +1,14 @@
 {
   "expo": {
-    "name": "MobileClient",
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "react-redux"
+        ]
+      }
+    },
+    "newArchEnabled": true,
+    "name": "Home Automation",
     "slug": "MobileClient",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,7 +21,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.and078.MobileClient"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,7 +38,15 @@
     },
     "plugins": [
       "expo-router",
-      ["expo-build-properties", { "android": { "usesCleartextTraffic": true } }]
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
