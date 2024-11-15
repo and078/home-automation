@@ -1,5 +1,6 @@
 import { Text, View, StyleSheet, TouchableOpacity, Dimensions, ImageBackground } from 'react-native';
 import image from '@/assets/images/house.png'
+import React from 'react';
 
 export const Video = () => {
   console.log("VIDEO");

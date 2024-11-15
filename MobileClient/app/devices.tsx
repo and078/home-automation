@@ -1,5 +1,6 @@
 import { View, StyleSheet, Text, ImageBackground, Dimensions } from 'react-native'
 import image from '@/assets/images/house.png'
+import React from 'react';
 
 
 const devices = () => {

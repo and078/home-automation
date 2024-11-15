@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, FlatList, TouchableOpacity, ImageBackground, Dimensions } from "react-native";
 import { useEffect, useState } from "react";
 import DeviceBox from "./DeviceBox";
-import { TOGGLE_DEVICES_STATE_API } from "@env";
+import React from "react";
 
 interface deviceData {
 	status: Number,
@@ -11,18 +11,21 @@ interface deviceData {
 
 const ToggleDevices = () => {
 	console.log("ToggleDevices()");
-
+	const toggleDevicesApi = process.env.EXPO_PUBLIC_TOGGLE_DEVICES_STATE_API;
 	const [devices, setDevices] = useState<Array<deviceData>>([]);
 
 	useEffect(() => {
 		setTimeout(() => {
-			getAlldevices();
+			getAlldevices(toggleDevicesApi);
 		}, 2000);
 	}, [])
 
-	const getAlldevices = async () => {
+	const getAlldevices = async (url: string | undefined) => {
+		if (!url) {
+			throw new Error("URL is undefined");
+		}
 		try {
-			const res = await fetch(TOGGLE_DEVICES_STATE_API);
+			const res = await fetch(url);
 			const data = await res.json();
 			setDevices(data.data);
 		} catch (error) {
@@ -32,7 +35,7 @@ const ToggleDevices = () => {
 
 	return (
 		<View style={styles.devices}>
-			<TouchableOpacity onPress={getAlldevices}>
+			<TouchableOpacity onPress={() => getAlldevices(toggleDevicesApi)}>
 				<Text style={styles.text}>Refresh devices</Text>
 			</TouchableOpacity>
 			<FlatList

@@ -2,7 +2,6 @@ import { Text, View, StyleSheet, FlatList, TouchableOpacity, ImageBackground, Di
 import React, { useEffect, useState } from 'react'
 import VideoDevice from "./VideoDevice";
 import VideoWebView from "./VideoWebView";
-import { VIDEO_DEVICES_API, START_STREAM, STOP_STREAM } from "@env";
 
 interface videoDeviceData {
 	name: string,
@@ -18,17 +17,23 @@ interface pressedDevice {
 
 const VideoDevices = () => {
 	console.log("VideoDevices()");
+	const devicesUrl = process.env.EXPO_PUBLIC_VIDEO_DEVICES_API;
+	const startStream = process.env.EXPO_PUBLIC_START_STREAM;
+	const stopStream = process.env.EXPO_PUBLIC_STOP_STREAM;
 	const [videoDevices, setVideoDevices] = useState<Array<videoDeviceData>>([]);
 	const [showWebView, setShowWebView] = useState<boolean>(false);
 	const [pressedDevice, setPressedDevice] = useState<pressedDevice>({ name: '', ip: '' });
 
 	useEffect(() => {
-		getAllVideoDevices();
+		getAllVideoDevices(devicesUrl);
 	}, [])
 
-	const getAllVideoDevices = async () => {
+	const getAllVideoDevices = async (url: string | undefined) => {
+		if (!url) {
+			throw new Error("URL is undefined");
+		  }
 		try {
-			const res = await fetch(VIDEO_DEVICES_API);
+			const res = await fetch(url);
 			const data = await res.json();
 			setVideoDevices(data.data);
 		} catch (error) {
@@ -38,7 +43,7 @@ const VideoDevices = () => {
 
 	const turnOnStream = async (cameraUrl: Number) => {
 		try {
-			const res = await fetch(`${START_STREAM}${cameraUrl}`);
+			const res = await fetch(`${startStream}${cameraUrl}`);
 			const data = await res.json();
 		} catch (error) {
 			console.log(error);
@@ -47,7 +52,7 @@ const VideoDevices = () => {
 
 	const turnOffStream = async () => {
 		try {
-			const res = await fetch(`${STOP_STREAM}`);
+			const res = await fetch(`${stopStream}`);
 			const data = await res.json();
 		} catch (error) {
 			console.log(error);

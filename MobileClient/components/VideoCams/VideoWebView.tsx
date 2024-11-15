@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Dimensions, Text, TouchableOpacity, View } from 'react-native';
 import { WebView } from 'react-native-webview';
-import ViewError from '@/components/VideoCams/ViewError'
-import { STREAM_API } from "@env";
+import ViewError from '@/components/VideoCams/ViewError';
 
 interface VewViewProps {
   name: string,
@@ -12,7 +11,7 @@ interface VewViewProps {
 
 const VideoWebView = (props: VewViewProps) => {
   console.log("VideoWebView()");
-  // console.log(STREAM_API);
+  const streamUrl = process.env.EXPO_PUBLIC_STREAM_API;
   
   const [key, setKey] = useState<bigint>(0n);
 
@@ -26,19 +25,23 @@ const VideoWebView = (props: VewViewProps) => {
     props.sendState(false);
   }
 
+  if (streamUrl)
   return (
     <TouchableOpacity onPress={handlePress}>
       <View style={styles.webView}>
         <Text style={styles.text}>{props.name}</Text>
         <WebView
           style={styles.webView}
-          source={{ uri: STREAM_API }}
+          source={{ uri: streamUrl}}
           key={key}
           onError={handleWebViewError}
           renderError={e => <ViewError name={e} />}
         />
       </View>
     </TouchableOpacity>
+  )
+  return (
+    <></>
   )
 }
 

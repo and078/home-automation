@@ -2,6 +2,7 @@ import { Text, View, StyleSheet, FlatList, TouchableOpacity, ImageBackground, Di
 import image from "@/assets/images/house.png";
 import ToggleDevices from "@/components/ToggleDevices/ToggleDevices";
 import VideoDevices from "@/components/VideoCams/VideoDevices";
+import React from "react";
 
 export default function Index() {
 	console.log("Index()");
