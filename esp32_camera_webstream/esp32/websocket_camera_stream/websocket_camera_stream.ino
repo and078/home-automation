@@ -27,8 +27,6 @@
 #define HREF_GPIO_NUM     23
 #define PCLK_GPIO_NUM     22
 
-
-
 const char* ssid     = "ssid";
 const char* password = "password";
 
@@ -39,22 +37,32 @@ IPAddress primaryDNS(8, 8, 8, 8);
 IPAddress secondaryDNS(8, 8, 4, 4);         
 
 const char* websockets_server_host = "host";
-const uint16_t websockets_server_port = 3003;
+const uint16_t websockets_server_port = 6000;
 
 camera_fb_t * fb = NULL;
 size_t _jpg_buf_len = 0;
 uint8_t * _jpg_buf = NULL;
 uint8_t state = 0;
+uint8_t flash = 4;
 
 using namespace websockets;
 WebsocketsClient client;
 
 void onMessageCallback(WebsocketsMessage message) {
+  String msg = message.data();
   Serial.print("Got Message: ");
-  Serial.println(message.data());
+  Serial.println(msg);
 
-  if (message.data() == "restart") {
+  if (msg == "restart") {
     ESP.restart();
+  }
+
+  if (msg == "flashON") {
+    digitalWrite(flash, HIGH);
+  }
+
+  if (msg == "flashOFF") {
+    digitalWrite(flash, LOW);
   }
 }
 
@@ -135,6 +143,7 @@ esp_err_t init_wifi() {
 
 void setup() {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
+  pinMode(flash, OUTPUT);
 
   Serial.begin(115200);
   Serial.setDebugOutput(true);

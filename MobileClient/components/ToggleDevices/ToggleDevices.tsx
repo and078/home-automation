@@ -17,7 +17,7 @@ const ToggleDevices = () => {
 	useEffect(() => {
 		setTimeout(() => {
 			getAlldevices(toggleDevicesApi);
-		}, 2000);
+		}, 500);
 	}, [])
 
 	const getAlldevices = async (url: string | undefined) => {

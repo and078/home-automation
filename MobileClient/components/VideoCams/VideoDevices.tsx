@@ -42,6 +42,8 @@ const VideoDevices = () => {
 	}
 
 	const turnOnStream = async (cameraUrl: Number) => {
+		console.log(cameraUrl);
+		
 		try {
 			const res = await fetch(`${startStream}${cameraUrl}`);
 			const data = await res.json();

@@ -20,6 +20,13 @@ const DeviceBox = (props: DeviceBoxProps) => {
 	}
 
 	useEffect(() => {
+		const timeout = setTimeout(() => {
+			postToDevice(props.state, props.deviceName);
+		}, 300);
+		return clearTimeout(timeout);
+	}, []);
+
+	useEffect(() => {
 		setColorByState(props.state);
 	}, [props.state]);
 
@@ -30,6 +37,8 @@ const DeviceBox = (props: DeviceBoxProps) => {
 	}
 
 	const postToDevice = async (status: Number, name: string) => {
+		console.log(JSON.stringify({ "id": name, "status": status }));
+		
 		try {
 			await fetch('http://188.237.107.39:3001/device', {
 				method: 'POST',

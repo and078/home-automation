@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, FlatList, TouchableOpacity, ImageBackground, Dimensions } from "react-native";
+import { View, StyleSheet, ImageBackground, Dimensions } from "react-native";
 import image from "@/assets/images/house.png";
 import ToggleDevices from "@/components/ToggleDevices/ToggleDevices";
 import VideoDevices from "@/components/VideoCams/VideoDevices";
@@ -28,7 +28,10 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		flex: 1,
-		resizeMode: 'cover',
+		resizeMode: 'stretch',
 		justifyContent: 'center',
+		alignItems: 'center',
+		width: Dimensions.get('window').width,
+		height: Dimensions.get('window').height,
 	},
 });
