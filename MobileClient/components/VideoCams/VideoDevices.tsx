@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
 		height: Dimensions.get('window').height / 2.8,
 		alignItems: 'center',
 		justifyContent: 'center',
+		margin: 50,
 	},
 	video_devices: {
 		flex: 1,

@@ -24,7 +24,8 @@
         "EXPO_PUBLIC_VIDEO_DEVICES_API": "http://188.237.107.39:3001/video-devices/",
         "EXPO_PUBLIC_START_STREAM": "http://188.237.107.39:3001/start-stream/",
         "EXPO_PUBLIC_STOP_STREAM": "http://188.237.107.39:3001/stop-stream/",
-        "EXPO_PUBLIC_STREAM_API": "http://188.237.107.39:1234/specific-camera-websocket-stream"
+        "EXPO_PUBLIC_STREAM_API": "http://188.237.107.39:1234/specific-camera-websocket-stream",
+        "EXPO_PUBLIC_CAMERA_FLASH": "http://188.237.107.39:3001/camera_flash/"
       }
     }
   },

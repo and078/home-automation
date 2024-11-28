@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Dimensions, Text, TouchableOpacity, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import ViewError from '@/components/VideoCams/ViewError';
+import LigtButton from './LigtButton';
 
 interface VewViewProps {
   name: string,
@@ -12,7 +13,7 @@ interface VewViewProps {
 const VideoWebView = (props: VewViewProps) => {
   console.log("VideoWebView()");
   const streamUrl = process.env.EXPO_PUBLIC_STREAM_API;
-  
+
   const [key, setKey] = useState<bigint>(0n);
 
   const handleWebViewError = () => {
@@ -26,20 +27,24 @@ const VideoWebView = (props: VewViewProps) => {
   }
 
   if (streamUrl)
-  return (
-    <TouchableOpacity onPress={handlePress}>
-      <View style={styles.webView}>
-        <Text style={styles.text}>{props.name}</Text>
-        <WebView
-          style={styles.webView}
-          source={{ uri: streamUrl}}
-          key={key}
-          onError={handleWebViewError}
-          renderError={e => <ViewError name={e} />}
-        />
-      </View>
-    </TouchableOpacity>
-  )
+    return (
+      <>
+        <TouchableOpacity onPress={handlePress}>
+          <View style={styles.webView}>
+            <Text style={styles.text}>{props.name}</Text>
+            <WebView
+              style={styles.webView}
+              source={{ uri: streamUrl }}
+              key={key}
+              onError={handleWebViewError}
+              renderError={e => <ViewError name={e} />}
+            />
+          </View>
+        </TouchableOpacity>
+        <LigtButton/>
+      </>
+
+    )
   return (
     <></>
   )
@@ -47,12 +52,13 @@ const VideoWebView = (props: VewViewProps) => {
 
 const styles = StyleSheet.create({
   webView: {
+    // flex: 1,
+    // margin: 20,
     backgroundColor: "black",
-    width: Dimensions.get('window').width - 60,
-    height: Dimensions.get('window').height,
+    width: Dimensions.get('window').width - 10,
+    height: Dimensions.get('window').height / 2.4,
     justifyContent: 'center',
     alignItems: 'center',
-    flex: 1,
   },
 
   text: {
