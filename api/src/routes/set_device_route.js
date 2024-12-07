@@ -1,9 +1,9 @@
-const { Router } = require('express');
-const set_device_controller = require('../controllers/set_device_controller');
-const bodyParser = require('body-parser');
+import { Router } from 'express';
+import set_device_controller from '../controllers/set_device_controller.js';
+import bodyParser from 'body-parser';
 const app = Router();
 
 app.use(bodyParser.json());
 app.post('/device', set_device_controller);
 
-module.exports = app;
+export default app;

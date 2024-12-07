@@ -7,6 +7,7 @@ import LigtButton from './LigtButton';
 interface VewViewProps {
   name: string,
   ip: string,
+  port: Number,
   sendState: (pressed: boolean) => void,
 }
 
@@ -41,7 +42,7 @@ const VideoWebView = (props: VewViewProps) => {
             />
           </View>
         </TouchableOpacity>
-        <LigtButton/>
+        <LigtButton port={props.port}/>
       </>
 
     )

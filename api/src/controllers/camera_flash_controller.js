@@ -1,12 +1,13 @@
-const fetchFlash = async (state) => {
+const fetchFlash = async (port, state) => {
     try {
-        await fetch(`http://192.168.1.224:6001?message=${state}`)
+        await fetch(`http://192.168.1.224:${port}?message=${state}`)
     } catch (error) {
         console.log(error);
     }
 }
 
-module.exports = (req, res) => {
-    fetchFlash(req.params.state)
+export default (req, res) => {
+    console.log(req.params);
+    fetchFlash(req.params.port, req.params.state)
     res.send(req.params);
 }

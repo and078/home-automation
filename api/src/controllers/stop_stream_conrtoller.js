@@ -1,9 +1,10 @@
-const { exec } = require('node:child_process');
-const path = require('path');
-const PARENT_PATH = path.dirname(path.dirname(__dirname));
+import { exec } from 'node:child_process';
+import path from 'path';
+
+const __dirname = path.resolve();
 
 const stopStream = () => {
-	exec(`${PARENT_PATH}/bash-scripts/kill-stream.sh`, (err, stdout, stderr) => {
+	exec(`${__dirname}/bash-scripts/kill-stream.sh`, (err, stdout, stderr) => {
 		if (err) {
 			console.error('error: ', err)
 		} else {
@@ -13,7 +14,7 @@ const stopStream = () => {
 	})
 }
 
-module.exports = (req, res) => {
+export default (req, res) => {
     	stopStream();
     	res.send({message: "Strean server was killed"});
     }

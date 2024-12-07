@@ -1,4 +1,4 @@
-const { exec } = require('node:child_process');
+import { exec } from 'node:child_process';
 
 const videoDevices = [
 	{
@@ -31,12 +31,12 @@ const parseStdOut = (out) => {
 }
 
 const getActiveCameras = async () => {
-
 	exec(IP_NEIGH_FLUSH_ALL, async (err, stdout, stderr) => {
 		if (err) {
 			console.error('error: ', err)
 		} else {
 			activeDevices = parseStdOut(stdout);
+			console.log(activeDevices);
 			if(stderr) console.log(`stderr: ${stderr}`);
 		}
 	})
@@ -48,12 +48,16 @@ const requestVideoDevices = async (activeDevices) => {
 	for (let i = 0; i < videoDevices.length; i++) {
 		activeDevices.forEach(d => {
 			if (`http://${d}` === videoDevices[i].ip) videoDevices[i].status = 1;
+			else videoDevices[i].status = 0;
 		})
 		arr.push((videoDevices[i]));
 	}
 	return arr;
 }
 
-module.exports = async (req, res) => {
-	res.send({ data: await requestVideoDevices(activeDevices) });
+export default async (req, res) => {
+	res.send({
+		data: await requestVideoDevices(activeDevices),
+		activeDevices: activeDevices
+	});
 }

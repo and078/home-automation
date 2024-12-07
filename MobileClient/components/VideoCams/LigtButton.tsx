@@ -1,17 +1,26 @@
 import React, { useState } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
 
-const LigtButton = () => {
+interface LightButtonProps {
+	port: Number
+}
+
+const LigtButton = (props: LightButtonProps) => {
 	const flashUrl = process.env.EXPO_PUBLIC_CAMERA_FLASH;
 	const [text, setText] = useState<string>("Light on");
 	const [isOn, setIsOn] = useState<boolean>(true);
 
-	const handlePress = async (state: boolean = false) => {
+	const handlePress = async (state: boolean = false) => {		
 		setIsOn(!isOn);
 		setText(state ? "Light off" : "Light on");
 		let stateString = 'flashOFF';
 		stateString = state ? 'flashON' : 'flashOFF';
-		await fetch(`${flashUrl}${stateString}`)
+		try {
+			await fetch(`${flashUrl}${props.port.valueOf() + 1}&${stateString}`);
+		} catch (error) {
+			console.log(error);
+		}
+		
 	}
 
 	return (

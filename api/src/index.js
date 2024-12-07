@@ -1,10 +1,10 @@
-const express = require('express');
-const devices_state_route = require('./routes/devices_state_route');
-const video_devices_route = require('./routes/video_devices_route');
-const start_stream_route = require('./routes/start_stream_route');
-const stop_stream_route = require('./routes/stop_stream_route');
-const set_device_route = require('./routes/set_device_route');
-const camera_flash_route = require('./routes/camera_flash_route');
+import express from 'express';
+import devices_state_route from './routes/devices_state_route.js';
+import video_devices_route from './routes/video_devices_route.js';
+import start_stream_route from './routes/start_stream_route.js';
+import stop_stream_route from './routes/stop_stream_route.js';
+import set_device_route from './routes/set_device_route.js';
+import camera_flash_route from './routes/camera_flash_route.js';
 
 const PORT = 3001;
 const app = express();

@@ -55,7 +55,7 @@ const requestToESP = async (localAddress, status, device, res) => {
 	}
 }
 
-module.exports = (req, res) => {
+export default (req, res) => {
 	let url = devices.find(d => d.name === req.body.id).url;
 	requestToESP(url, req.body.status, req.body.id, res);
 }

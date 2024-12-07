@@ -12,7 +12,8 @@ interface videoDeviceData {
 
 interface pressedDevice {
 	name: string,
-	ip: string
+	ip: string,
+	port: Number
 };
 
 const VideoDevices = () => {
@@ -22,7 +23,7 @@ const VideoDevices = () => {
 	const stopStream = process.env.EXPO_PUBLIC_STOP_STREAM;
 	const [videoDevices, setVideoDevices] = useState<Array<videoDeviceData>>([]);
 	const [showWebView, setShowWebView] = useState<boolean>(false);
-	const [pressedDevice, setPressedDevice] = useState<pressedDevice>({ name: '', ip: '' });
+	const [pressedDevice, setPressedDevice] = useState<pressedDevice>({ name: '', ip: '', port: 0 });
 
 	useEffect(() => {
 		getAllVideoDevices(devicesUrl);
@@ -78,7 +79,7 @@ const VideoDevices = () => {
 										sendStateToIndex={(pressed) => {
 											turnOnStream(item.ws_server_port);
 											setShowWebView(pressed);
-											setPressedDevice({ name: item.name, ip: item.ip });
+											setPressedDevice({ name: item.name, ip: item.ip, port: item.ws_server_port });
 										}} />
 								</>
 							);
@@ -87,6 +88,7 @@ const VideoDevices = () => {
 				<View style={styles.devices}>
 					<VideoWebView
 						name={pressedDevice.name}
+						port={pressedDevice.port}
 						ip={pressedDevice.ip}
 						sendState={(pressed) => {
 							turnOffStream();

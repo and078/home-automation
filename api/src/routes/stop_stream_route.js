@@ -1,7 +1,7 @@
-const { Router } = require('express');
-const stop_stream_controller = require('../controllers/stop_stream_conrtoller');
+import { Router } from 'express';
+import stop_stream_controller from '../controllers/stop_stream_conrtoller.js';
 const app = Router();
 
 app.get('/stop-stream', stop_stream_controller);
 
-module.exports = app;
+export default app;

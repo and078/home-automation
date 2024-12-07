@@ -1,10 +1,11 @@
-const { exec } = require('node:child_process');
-const path = require('path');
-const PARENT_PATH = path.dirname(path.dirname(__dirname));
+import { exec } from 'node:child_process';
+import path from 'path';
+
+const __dirname = path.resolve();
 
 const startStream = (port) => {
     try {
-        exec(`${PARENT_PATH}/bash-scripts/run-stream.sh ${port}`, (err, stdout, stderr) => {
+        exec(`${__dirname}/bash-scripts/run-stream.sh ${port}`, (err, stdout, stderr) => {
             if (err) {
                 console.error('error: ', err)
             } else {
@@ -18,7 +19,7 @@ const startStream = (port) => {
     }
 }
 
-module.exports = (req, res) => {
+export default (req, res) => {
 	startStream(req.params.port);
 	res.send({ "port": req.params.port });
 }

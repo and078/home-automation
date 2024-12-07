@@ -47,6 +47,6 @@ const requestAllDevices = async () => {
 	return arr;
 }
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
 	res.send({ data: await requestAllDevices() });
 }

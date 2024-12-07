@@ -1,7 +1,7 @@
-const { Router } = require('express');
-const start_stream_controller = require('../controllers/start_stream_controller');
+import { Router } from 'express';
+import start_stream_controller from '../controllers/start_stream_controller.js';
 const app = Router();
 
 app.get('/start-stream/:port', start_stream_controller);
 
-module.exports = app;
+export default app;
