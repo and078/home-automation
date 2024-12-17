@@ -1,4 +1,4 @@
-import { Router }from 'express';
+import { Router } from 'express';
 import camera_flash_controller from '../controllers/camera_flash_controller.js';
 const app = Router();
 

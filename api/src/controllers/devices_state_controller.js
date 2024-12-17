@@ -1,4 +1,45 @@
-const ABORT_SIGNAL_TIMEOUT = 200;
+import mysql from "mysql2";
+
+const db = mysql.createConnection({
+	host: '127.0.0.1',
+	user: 'and078',
+	database: 'home_automation_db',
+	password: 'mysqlpswd',
+});
+
+db.connect((err) => {
+	if (err) {
+		console.error('Error connecting to MySQL: ' + err.stack);
+		return;
+	}
+	console.log('Connected to MySQL as ID ' + db.threadId);
+});
+
+
+const sql = 'SELECT * FROM test;';
+
+const dbDataRequest = async (query) => {
+	return new Promise((resolve, reject) => {
+		db.query(query, (err, res) => {
+			if (err) {
+				return reject(err);
+			}
+			resolve(res);
+		});
+	});
+}
+
+const getUser = async () => {
+	try {
+		const result = await dbDataRequest(sql);
+		return result;
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
+
+const ABORT_SIGNAL_TIMEOUT = 300;
 
 const devices = [
 	{
@@ -48,5 +89,8 @@ const requestAllDevices = async () => {
 }
 
 export default async (req, res) => {
-	res.send({ data: await requestAllDevices() });
+	res.send({
+		data: await requestAllDevices(),
+		sql: await getUser()
+	});
 }
