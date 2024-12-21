@@ -1,31 +1,15 @@
+import mysql from "mysql2";
+
+const db = mysql.createConnection({
+	host: '127.0.0.1',
+	user: 'and078',
+	database: 'home_automation_db',
+	password: 'mysqlpswd',
+});
+
 const ABORT_SIGNAL_TIMEOUT = 200;
 
-const devices = [
-	{
-		name: "lolin",
-		type: "toggle",
-		url: 'http://192.168.1.185:5555/test',
-		state: 0,
-	},
-	{
-		name: "esp",
-		type: "toggle",
-		url: 'http://192.168.1.184:5555/test',
-		state: 0,
-	},
-	{
-		name: "esp1",
-		type: "toggle",
-		url: 'http://192.168.1.183:5555/test',
-		state: 0,
-	},
-	{
-		name: "esp2",
-		type: "toggle",
-		url: 'http://192.168.1.182:5555/test',
-		state: 0,
-	}
-]
+const TOGGLE_DEVICES_SQL = 'SELECT * FROM toggle_devices;';
 
 const handleResponseFromEsp = (response, device, res) => {
 	res.send({
@@ -34,7 +18,7 @@ const handleResponseFromEsp = (response, device, res) => {
 	});
 }
 
-const requestToESP = async (localAddress, status, device, res) => {	
+const requestToESP = async (localAddress, status, device, res) => {
 	try {
 		await fetch(localAddress, {
 			method: 'POST',
@@ -56,6 +40,13 @@ const requestToESP = async (localAddress, status, device, res) => {
 }
 
 export default (req, res) => {
-	let url = devices.find(d => d.name === req.body.id).url;
-	requestToESP(url, req.body.status, req.body.id, res);
+	try {
+		db.query(TOGGLE_DEVICES_SQL, async (err, result) => {
+			if (err) console.log(err);
+			let url = result.find(d => d.name === req.body.id).url;
+			await requestToESP(url, req.body.status, req.body.id, res);
+		});
+	} catch (error) {
+		console.log(error);
+	}
 }

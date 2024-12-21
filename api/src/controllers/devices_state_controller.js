@@ -1,72 +1,14 @@
 import mysql from "mysql2";
 
+const TOGGLE_DEVICES_SQL = 'SELECT * FROM toggle_devices;';
+const ABORT_SIGNAL_TIMEOUT = 300;
+
 const db = mysql.createConnection({
 	host: '127.0.0.1',
 	user: 'and078',
 	database: 'home_automation_db',
 	password: 'mysqlpswd',
 });
-
-db.connect((err) => {
-	if (err) {
-		console.error('Error connecting to MySQL: ' + err.stack);
-		return;
-	}
-	console.log('Connected to MySQL as ID ' + db.threadId);
-});
-
-
-const sql = 'SELECT * FROM test;';
-
-const dbDataRequest = async (query) => {
-	return new Promise((resolve, reject) => {
-		db.query(query, (err, res) => {
-			if (err) {
-				return reject(err);
-			}
-			resolve(res);
-		});
-	});
-}
-
-const getUser = async () => {
-	try {
-		const result = await dbDataRequest(sql);
-		return result;
-	} catch (error) {
-		console.log(error);
-		throw error;
-	}
-}
-
-const ABORT_SIGNAL_TIMEOUT = 300;
-
-const devices = [
-	{
-		name: "lolin",
-		type: "toggle",
-		url: 'http://192.168.1.185:5555/test',
-		state: 0,
-	},
-	{
-		name: "esp",
-		type: "toggle",
-		url: 'http://192.168.1.184:5555/test',
-		state: 0,
-	},
-	{
-		name: "esp1",
-		type: "toggle",
-		url: 'http://192.168.1.183:5555/test',
-		state: 0,
-	},
-	{
-		name: "esp2",
-		type: "toggle",
-		url: 'http://192.168.1.182:5555/test',
-		state: 0,
-	}
-]
 
 const requestSpecificDevice = async (device) => {
 	try {
@@ -80,7 +22,7 @@ const requestSpecificDevice = async (device) => {
 	}
 }
 
-const requestAllDevices = async () => {
+const requestAllDevices = async (devices) => {
 	const arr = [];
 	for (let i = 0; i < devices.length; i++) {
 		arr.push(await requestSpecificDevice(devices[i]));
@@ -88,9 +30,15 @@ const requestAllDevices = async () => {
 	return arr;
 }
 
-export default async (req, res) => {
-	res.send({
-		data: await requestAllDevices(),
-		sql: await getUser()
-	});
+export default async (_, res) => {
+	try {
+		db.query(TOGGLE_DEVICES_SQL, async (err, result) => {
+			if (err) console.log(err);		
+			res.send({
+				data: await requestAllDevices(result)
+			});
+		});
+	} catch (error) {
+		console.log(error);
+	}
 }
