@@ -25,12 +25,13 @@ const requestVideoDevices = async (activeDevices) => {
 
 export default async (req, res) => {
 	try {
-		db.query(VIDEO_DEVICES_SQL, async (err, result) => {
+		await db.query(VIDEO_DEVICES_SQL, async (err, result) => {
 			if (err) console.log(err);		
-			res.send({
+			await res.send({
 				data: result
 			});
 		});
+        db.end();
 	} catch (error) {
 		console.log(error);
 	}

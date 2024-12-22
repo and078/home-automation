@@ -39,13 +39,14 @@ const requestToESP = async (localAddress, status, device, res) => {
 	}
 }
 
-export default (req, res) => {
+export default async (req, res) => {
 	try {
-		db.query(TOGGLE_DEVICES_SQL, async (err, result) => {
+		await db.query(TOGGLE_DEVICES_SQL, async (err, result) => {
 			if (err) console.log(err);
 			let url = result.find(d => d.name === req.body.id).url;
 			await requestToESP(url, req.body.status, req.body.id, res);
 		});
+        db.end();
 	} catch (error) {
 		console.log(error);
 	}

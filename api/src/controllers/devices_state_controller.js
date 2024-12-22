@@ -32,12 +32,13 @@ const requestAllDevices = async (devices) => {
 
 export default async (_, res) => {
 	try {
-		db.query(TOGGLE_DEVICES_SQL, async (err, result) => {
+		await db.query(TOGGLE_DEVICES_SQL, async (err, result) => {
 			if (err) console.log(err);		
 			res.send({
 				data: await requestAllDevices(result)
 			});
 		});
+        db.end();
 	} catch (error) {
 		console.log(error);
 	}
