@@ -1,14 +1,7 @@
-import mysql from "mysql2";
+import mysql from "mysql2/promise";
 
 const TOGGLE_DEVICES_SQL = 'SELECT * FROM toggle_devices;';
-const ABORT_SIGNAL_TIMEOUT = 300;
-
-const db = mysql.createConnection({
-	host: '127.0.0.1',
-	user: 'and078',
-	database: 'home_automation_db',
-	password: 'mysqlpswd',
-});
+const ABORT_SIGNAL_TIMEOUT = 500;
 
 const requestSpecificDevice = async (device) => {
 	try {
@@ -24,22 +17,29 @@ const requestSpecificDevice = async (device) => {
 
 const requestAllDevices = async (devices) => {
 	const arr = [];
-	for (let i = 0; i < devices.length; i++) {
-		arr.push(await requestSpecificDevice(devices[i]));
+	if (devices) {
+		for (let i = 0; i < devices.length; i++) {
+			arr.push(await requestSpecificDevice(devices[i]));
+		}
+		return arr;
 	}
 	return arr;
 }
 
 export default async (_, res) => {
+	const db = await mysql.createConnection({
+		host: '127.0.0.1',
+		user: 'and078',
+		database: 'home_automation_db',
+		password: 'mysqlpswd',
+	});
 	try {
-		await db.query(TOGGLE_DEVICES_SQL, async (err, result) => {
-			if (err) console.log(err);		
-			res.send({
-				data: await requestAllDevices(result)
-			});
+		const [rows] = await db.execute(TOGGLE_DEVICES_SQL);
+		res.send({
+			data: await requestAllDevices(rows)
 		});
-        db.end();
 	} catch (error) {
 		console.log(error);
 	}
+	await db.end();
 }

@@ -1,14 +1,6 @@
-import mysql from "mysql2";
-
-const db = mysql.createConnection({
-	host: '127.0.0.1',
-	user: 'and078',
-	database: 'home_automation_db',
-	password: 'mysqlpswd',
-});
+import mysql from "mysql2/promise";
 
 const ABORT_SIGNAL_TIMEOUT = 200;
-
 const TOGGLE_DEVICES_SQL = 'SELECT * FROM toggle_devices;';
 
 const handleResponseFromEsp = (response, device, res) => {
@@ -40,14 +32,20 @@ const requestToESP = async (localAddress, status, device, res) => {
 }
 
 export default async (req, res) => {
+	const db = await mysql.createConnection({
+		host: '127.0.0.1',
+		user: 'and078',
+		database: 'home_automation_db',
+		password: 'mysqlpswd',
+	});
 	try {
-		await db.query(TOGGLE_DEVICES_SQL, async (err, result) => {
-			if (err) console.log(err);
-			let url = result.find(d => d.name === req.body.id).url;
+		const [rows] = await db.execute(TOGGLE_DEVICES_SQL);
+		if(rows) {
+			let url = rows.find(d => d.name === req.body.id).url;
 			await requestToESP(url, req.body.status, req.body.id, res);
-		});
-        db.end();
+		}
 	} catch (error) {
 		console.log(error);
 	}
+	await db.end();
 }
