@@ -1,4 +1,4 @@
 api/node_modules
-MobileClient/.env
-MobileClient/.env.production
-MobileClient/eas.json
+.env
+.env.production
+eas.json
