@@ -5,12 +5,14 @@ const ABORT_SIGNAL_TIMEOUT = 500;
 
 const requestSpecificDevice = async (device) => {
 	try {
-		const response = await fetch(device.url, { signal: AbortSignal.timeout(ABORT_SIGNAL_TIMEOUT) });
+		const response = await fetch(`${device.url}/relay`, { signal: AbortSignal.timeout(ABORT_SIGNAL_TIMEOUT) });
+		
 		if (response.ok) {
-			return await response.json();
+			const res = await response.json();
+			return res;
 		}
 	} catch (error) {
-		console.error("SpecificDevice error: ", error.message);
+		console.error("SpecificDevice error: ", error);
 		return { status: -1, name: device.name, type: device.type };
 	}
 }

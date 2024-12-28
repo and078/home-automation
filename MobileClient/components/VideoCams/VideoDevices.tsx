@@ -47,7 +47,6 @@ const VideoDevices = () => {
 		
 		try {
 			const res = await fetch(`${startStream}${cameraUrl}`);
-			const data = await res.json();
 		} catch (error) {
 			console.log(error);
 		}

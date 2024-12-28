@@ -12,6 +12,7 @@ const DeviceBox = (props: DeviceBoxProps) => {
 	console.log("DeviceBox()");
 	const [boxState, setBoxState] = useState<Number>(props.state);
 	const [color, setColor] = useState<string>("#423c3fcc");
+	const setToggleDeviceUrl = process.env.EXPO_PUBLIC_SET_TOGGLE_DEVICE;
 
 	const setColorByState = (state: Number): void => {
 		if (state == 1) setColor("#0f505588");
@@ -37,23 +38,15 @@ const DeviceBox = (props: DeviceBoxProps) => {
 	}
 
 	const postToDevice = async (status: Number, name: string) => {
-		console.log(JSON.stringify({ "id": name, "status": status }));
-		
 		try {
-			await fetch('http://188.237.107.39:3001/device', {
-				method: 'POST',
-				headers: {
-					'Accept': 'application/json, text/plain, */*',
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ "id": name, "status": status })
-			})
+			if(setToggleDeviceUrl) {
+				await fetch(`${setToggleDeviceUrl}?name=${name}&state=${status}`)
 				.then(response => response.json())
 				.then(response => {
-					console.log(response);
 					setBoxState(response.status);
 					setColorByState(response.status);
 				})
+			}
 		}
 		catch (err) {
 			console.log("PostError: ", err);

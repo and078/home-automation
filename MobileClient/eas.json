@@ -20,6 +20,7 @@
         "gradleCommand": ":app:assembleRelease"
       },
       "env": {
+        "EXPO_PUBLIC_SET_TOGGLE_DEVICE": "http://188.237.107.39:3001/device/",
         "EXPO_PUBLIC_TOGGLE_DEVICES_STATE_API": "http://188.237.107.39:3001/devices-state/",
         "EXPO_PUBLIC_VIDEO_DEVICES_API": "http://188.237.107.39:3001/video-devices/",
         "EXPO_PUBLIC_START_STREAM": "http://188.237.107.39:3001/start-stream/",

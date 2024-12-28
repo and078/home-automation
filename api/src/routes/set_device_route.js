@@ -4,6 +4,6 @@ import bodyParser from 'body-parser';
 const app = Router();
 
 app.use(bodyParser.json());
-app.post('/device', set_device_controller);
+app.get('/device', set_device_controller);
 
 export default app;
