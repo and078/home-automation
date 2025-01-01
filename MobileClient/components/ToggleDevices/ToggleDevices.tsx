@@ -21,13 +21,13 @@ const ToggleDevices = () => {
 	}, [])
 
 	const getAlldevices = async (url: string | undefined) => {
-		if (!url) {
-			throw new Error("URL is undefined");
-		}
 		try {
-			const res = await fetch(url);
-			const data = await res.json();
-			setDevices(data.data);
+			if (url) {
+				const res = await fetch(url);
+				const data = await res.json();
+				console.log(data.data);
+				setDevices(data.data);
+			}
 		} catch (error) {
 			console.log(error);
 		}

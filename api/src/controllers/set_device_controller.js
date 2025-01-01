@@ -19,7 +19,7 @@ const requestToESP = async (localAddress, status, device, res) => {
 			})
 	} catch (error) {
 		handleResponseFromEsp(-1, device, res);
-		console.log("Api error post to device:", error);
+		console.log("Api error post to device:", device, error);
 	}
 }
 

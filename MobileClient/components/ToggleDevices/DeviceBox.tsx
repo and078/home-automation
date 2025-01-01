@@ -10,6 +10,8 @@ interface DeviceBoxProps {
 
 const DeviceBox = (props: DeviceBoxProps) => {
 	console.log("DeviceBox()");
+	console.log(props);
+	
 	const [boxState, setBoxState] = useState<Number>(props.state);
 	const [color, setColor] = useState<string>("#423c3fcc");
 	const setToggleDeviceUrl = process.env.EXPO_PUBLIC_SET_TOGGLE_DEVICE;
@@ -21,21 +23,12 @@ const DeviceBox = (props: DeviceBoxProps) => {
 	}
 
 	useEffect(() => {
+		setColorByState(props.state);
 		const timeout = setTimeout(() => {
 			postToDevice(props.state, props.deviceName);
 		}, 300);
 		return clearTimeout(timeout);
 	}, []);
-
-	useEffect(() => {
-		setColorByState(props.state);
-	}, [props.state]);
-
-	const toggle = (state: Number) => {
-		if (state == 0) return 1;
-		if (state == 1) return 0;
-		return state;
-	}
 
 	const postToDevice = async (status: Number, name: string) => {
 		try {
@@ -43,6 +36,7 @@ const DeviceBox = (props: DeviceBoxProps) => {
 				await fetch(`${setToggleDeviceUrl}?name=${name}&state=${status}`)
 				.then(response => response.json())
 				.then(response => {
+					// console.log(response);
 					setBoxState(response.status);
 					setColorByState(response.status);
 				})
@@ -56,8 +50,10 @@ const DeviceBox = (props: DeviceBoxProps) => {
 	return (
 		<>
 			<TouchableOpacity
-				onPress={async () => {
-					await postToDevice(toggle(boxState), props.deviceName);
+				onPress={ () => {
+					console.log(boxState);
+					if (boxState === 0) postToDevice(1, props.deviceName);
+					if (boxState === 1) postToDevice(0, props.deviceName);
 				}}>
 				<View style={{
 					flex: 1,
