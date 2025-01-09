@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, FlatList, TouchableOpacity, ImageBackground, Dimensions } from "react-native";
+import { Text, View, StyleSheet, FlatList, TouchableOpacity, Dimensions } from "react-native";
 import { useEffect, useState } from "react";
 import DeviceBox from "./DeviceBox";
 import React from "react";

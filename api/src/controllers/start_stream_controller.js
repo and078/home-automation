@@ -8,9 +8,8 @@ const startStream = (port) => {
         exec(`${__dirname}/bash-scripts/run-stream.sh ${port}`, (err, stdout, stderr) => {
             if (err) {
                 console.error('error: ', err)
+                return
             } else {
-                console.log(port);
-                console.log(`stdout: ${stdout}`);
                 if (stderr) console.log(`stderr: ${stderr}`);
             }
         })

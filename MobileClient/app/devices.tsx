@@ -1,10 +1,9 @@
-import { View, StyleSheet, Text, ImageBackground, Dimensions } from 'react-native'
+import { View, StyleSheet, Text, ImageBackground, Dimensions, FlatList } from 'react-native'
 import image from '@/assets/images/house.png'
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
+import CircularProgress from '@/components/other/CircularProgress';
 
 const devices = () => {
-	console.log("DEVICES");
 	
 	return (
 		<View style={styles.container}>
@@ -18,15 +17,16 @@ const devices = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#000000',
+		backgroundColor: 'transparent',
 		alignItems: 'center',
 		justifyContent: 'center',
-
 	},
 	text: {
 		color: '#fff',
 		alignItems: 'center',
 		justifyContent: 'center',
+		padding: 15,
+		fontSize: 10,
 	},
 	image: {
 		flex: 1,

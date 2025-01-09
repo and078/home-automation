@@ -1,12 +1,11 @@
 import mysql from "mysql2/promise";
 
 const TOGGLE_DEVICES_SQL = 'SELECT * FROM toggle_devices;';
-const ABORT_SIGNAL_TIMEOUT = 500;
+const ABORT_SIGNAL_TIMEOUT = 1000;
 
 const requestSpecificDevice = async (device) => {
 	try {
 		const response = await fetch(`${device.url}/relay`, { signal: AbortSignal.timeout(ABORT_SIGNAL_TIMEOUT) });
-		
 		if (response.ok) {
 			const res = await response.json();
 			return res;

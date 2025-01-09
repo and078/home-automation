@@ -1,6 +1,6 @@
 import mysql from "mysql2/promise";
 
-const ABORT_SIGNAL_TIMEOUT = 500;
+const ABORT_SIGNAL_TIMEOUT = 1000;
 const TOGGLE_DEVICES_SQL = 'SELECT * FROM toggle_devices;';
 
 const handleResponseFromEsp = async (response, device, res) => {
@@ -34,8 +34,9 @@ export default async (req, res) => {
 	try {
 		const [rows] = await db.execute(TOGGLE_DEVICES_SQL);
 		if(rows) {			
-			let url = rows.find(d => d.name === req.query.name).url;
-			await requestToESP(url, req.query.state, req.query.name, res);
+			let device = rows.find(d => d.name === req.query.name);
+			await requestToESP(device.url, req.query.state, req.query.name, res);
+			await db.execute(`UPDATE toggle_devices SET state = ${req.query.state} WHERE name = "${req.query.name}";`);
 		}
 	} catch (error) {
 		console.log(error);

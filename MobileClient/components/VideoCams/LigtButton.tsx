@@ -20,7 +20,6 @@ const LigtButton = (props: LightButtonProps) => {
 		} catch (error) {
 			console.log(error);
 		}
-		
 	}
 
 	return (

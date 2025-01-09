@@ -12,6 +12,7 @@ export default function TabLayout() {
           backgroundColor: 'black',
         },
         headerShadowVisible: false,
+        headerShown: true,
         headerTintColor: "#14cee6cc",
         tabBarStyle: {
           backgroundColor: 'black',
@@ -26,6 +27,15 @@ export default function TabLayout() {
             <Ionicons name={focused ? 'home-sharp' : 'home-outline'} color={color} size={24} />
           ),
         }}
+        listeners={
+          ({ navigation }) => ({
+            tabPress: (e) => {
+              e.preventDefault();
+              navigation.navigate('index');
+              console.log(e);
+            },
+          })
+        }
       />
       <Tabs.Screen
         name="video"
@@ -42,6 +52,15 @@ export default function TabLayout() {
           title: 'Devices',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'grid-sharp' : 'grid-outline'} color={color} size={24} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="performance"
+        options={{
+          title: 'Performance',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'speedometer' : 'speedometer-outline'} color={color} size={24} />
           ),
         }}
       />
