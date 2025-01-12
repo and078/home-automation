@@ -23,19 +23,11 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
+          
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'home-sharp' : 'home-outline'} color={color} size={24} />
           ),
         }}
-        listeners={
-          ({ navigation }) => ({
-            tabPress: (e) => {
-              e.preventDefault();
-              navigation.navigate('index');
-              console.log(e);
-            },
-          })
-        }
       />
       <Tabs.Screen
         name="video"

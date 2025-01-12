@@ -1,14 +1,29 @@
-import { View, StyleSheet, Text, ImageBackground, Dimensions, FlatList } from 'react-native'
+import { View, StyleSheet, Text, ImageBackground, Dimensions, FlatList, StatusBar } from 'react-native'
 import image from '@/assets/images/house.png'
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import CircularProgress from '@/components/other/CircularProgress';
+import { useFocusEffect } from 'expo-router';
 
 const performance = () => {
 	console.log("PERFORMANCE");
 	const cpuUsageUrl = process.env.EXPO_PUBLIC_CPUS_PERFORMANCE;
 	const memoruUsageUrl = process.env.EXPO_PUBLIC_MEMORY_PERFORMANCE;
 	const [cpuProgress, setCpuProgress] = useState({});
-	const [memoryProgress, setMemoryProgress] = useState(0);	
+	const [memoryProgress, setMemoryProgress] = useState(0);
+
+	useFocusEffect(
+		useCallback(() => {
+			console.log("useFocusEffect");
+			const interval = setInterval(async () => {
+				await getCPUProgress();
+				await geMemogyProgress();
+			}, 1000);
+			return () => {
+				clearInterval(interval);
+				console.log("useFocusEffect cleanup");
+			}
+		}, [])
+	);
 
 	const objectToArray = (object: any) => {
 		let arr = [];
@@ -33,34 +48,28 @@ const performance = () => {
 			setMemoryProgress(data.data.MemoryPerformance);
 		}
 	}
-	useEffect(() => {
-		const interval = setInterval(async () => {
-			await getCPUProgress();
-			await geMemogyProgress();
-		}, 1000);
-		return () => clearInterval(interval);
-	}, []);
 
 	return (
 		<View style={styles.container}>
+			<StatusBar hidden={false}  backgroundColor="black" barStyle="light-content"/>
 			<ImageBackground source={image} style={styles.image}>
 				<View style={styles.innerContainer}>
-				<Text style={styles.text}>CPU Usage</Text>
-				<FlatList
-					data={objectToArray(cpuProgress)}
-					numColumns={3}
-					renderItem={({ item }) => {
-						return (
-							<>
-								<CircularProgress
-									progress={Number(item[1])}
-									size={100}
-									name={item[0]}
-								/>
-							</>
-						)
-					}}
-				/>
+					<Text style={styles.text}>CPU Usage</Text>
+					<FlatList
+						data={objectToArray(cpuProgress)}
+						numColumns={3}
+						renderItem={({ item }) => {
+							return (
+								<>
+									<CircularProgress
+										progress={Number(item[1])}
+										size={100}
+										name={item[0]}
+									/>
+								</>
+							)
+						}}
+					/>
 				</View>
 				<View style={styles.innerContainer}>
 					<Text style={styles.text}>Memory Usage</Text>

@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, TouchableOpacity, Dimensions, ImageBackground } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Dimensions, ImageBackground, StatusBar } from 'react-native';
 import image from '@/assets/images/house.png'
 import React from 'react';
 
@@ -7,6 +7,7 @@ export const Video = () => {
   
   return (
     <View style={styles.container}>
+      <StatusBar hidden={false}  backgroundColor="black" barStyle="light-content"/>
       <ImageBackground source={image} style={styles.image}>
         <Text style={styles.text}>Video</Text>
       </ImageBackground>

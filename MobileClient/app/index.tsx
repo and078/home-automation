@@ -1,4 +1,4 @@
-import { View, StyleSheet, ImageBackground, Dimensions } from "react-native";
+import { View, StyleSheet, ImageBackground, Dimensions, StatusBar } from "react-native";
 import image from "@/assets/images/house.png";
 import ToggleDevices from "@/components/ToggleDevices/ToggleDevices";
 import VideoDevices from "@/components/VideoCams/VideoDevices";
@@ -11,6 +11,7 @@ export default function Index() {
 	return (
 		<>
 			<View style={styles.container}>
+				<StatusBar hidden={false}  backgroundColor="black" barStyle="light-content"/>
 				<ImageBackground source={image} style={styles.image}>
 					<VideoDevices />
 					<HorizontalSpacer />

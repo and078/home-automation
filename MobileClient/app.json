@@ -1,5 +1,8 @@
 {
   "expo": {
+    "androidStatusBar": {
+      "hidden": false
+    },
     "doctor": {
       "reactNativeDirectoryCheck": {
         "exclude": [
@@ -22,7 +25,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.and078.MobileClient"
+      "bundleIdentifier": "com.and078.MobileClient",
+      "statusBarHidden": false
     },
     "android": {
       "adaptiveIcon": {
