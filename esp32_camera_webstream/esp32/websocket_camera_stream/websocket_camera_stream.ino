@@ -4,61 +4,70 @@
 #include "esp_timer.h"
 #include "img_converters.h"
 #include "fb_gfx.h"
-#include "soc/soc.h" //disable brownout problems
-#include "soc/rtc_cntl_reg.h" //disable brownout problems
+#include "soc/soc.h"           //disable brownout problems
+#include "soc/rtc_cntl_reg.h"  //disable brownout problems
 #include "driver/gpio.h"
+#include <ESP32Servo.h>
+#include <EEPROM.h>
 
 
 // configuration for AI Thinker Camera board
-#define PWDN_GPIO_NUM     32
-#define RESET_GPIO_NUM    -1
-#define XCLK_GPIO_NUM      0
-#define SIOD_GPIO_NUM     26
-#define SIOC_GPIO_NUM     27
-#define Y9_GPIO_NUM       35
-#define Y8_GPIO_NUM       34
-#define Y7_GPIO_NUM       39
-#define Y6_GPIO_NUM       36
-#define Y5_GPIO_NUM       21
-#define Y4_GPIO_NUM       19
-#define Y3_GPIO_NUM       18
-#define Y2_GPIO_NUM        5
-#define VSYNC_GPIO_NUM    25
-#define HREF_GPIO_NUM     23
-#define PCLK_GPIO_NUM     22
+#define PWDN_GPIO_NUM 32
+#define RESET_GPIO_NUM -1
+#define XCLK_GPIO_NUM 0
+#define SIOD_GPIO_NUM 26
+#define SIOC_GPIO_NUM 27
+#define Y9_GPIO_NUM 35
+#define Y8_GPIO_NUM 34
+#define Y7_GPIO_NUM 39
+#define Y6_GPIO_NUM 36
+#define Y5_GPIO_NUM 21
+#define Y4_GPIO_NUM 19
+#define Y3_GPIO_NUM 18
+#define Y2_GPIO_NUM 5
+#define VSYNC_GPIO_NUM 25
+#define HREF_GPIO_NUM 23
+#define PCLK_GPIO_NUM 22
 
-const char* ssid     = "ssid";
-const char* password = "password";
+const char* ssid = "ssid";    // CHANGE HERE
+const char* password = "rassword";  // CHANGE HERE
 
-IPAddress local_IP(192, 168, 1, 210); //set camera static ip
-IPAddress gateway(192, 168, 1, 1);          
-IPAddress subnet(255, 255, 255, 0);         
-IPAddress primaryDNS(8, 8, 8, 8);           
-IPAddress secondaryDNS(8, 8, 4, 4);         
+IPAddress local_IP(192, 168, 1, 210);  // Set your desired IP
+IPAddress gateway(192, 168, 1, 1);     // Set your network gateway
+IPAddress subnet(255, 255, 255, 0);    // Set your subnet mask
+IPAddress primaryDNS(8, 8, 8, 8);      // Optional: Primary DNS
+IPAddress secondaryDNS(8, 8, 4, 4);    // Optional: Secondary DNS
 
-const char* websockets_server_host = "host";
-const uint16_t websockets_server_port = 6000;
+const char* websockets_server_host = "192.168.1.224";  //CHANGE HERE
+const uint16_t websockets_server_port = 6000;          // OPTIONAL CHANGE
 
-camera_fb_t * fb = NULL;
+camera_fb_t* fb = NULL;
 size_t _jpg_buf_len = 0;
-uint8_t * _jpg_buf = NULL;
+uint8_t* _jpg_buf = NULL;
 uint8_t state = 0;
+
 uint8_t flash = 4;
+
+static const int servoPin = 14;
+const int DEGREES_PER_PRESS = 10;
+byte servoAngle = EEPROM.read(0);
+
+Servo servo;
 
 using namespace websockets;
 WebsocketsClient client;
 
-void WiFiStationConnected(WiFiEvent_t event, WiFiEventInfo_t info){
+void WiFiStationConnected(WiFiEvent_t event, WiFiEventInfo_t info) {
   Serial.println("Connected to AP successfully!");
 }
 
-void WiFiGotIP(WiFiEvent_t event, WiFiEventInfo_t info){
+void WiFiGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 }
 
-void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info){
+void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
   Serial.println("Disconnected from WiFi access point");
   Serial.print("WiFi lost connection. Reason: ");
   Serial.println(info.wifi_sta_disconnected.reason);
@@ -81,6 +90,38 @@ void onMessageCallback(WebsocketsMessage message) {
 
   if (msg == "flashOFF") {
     digitalWrite(flash, LOW);
+  }
+
+  if (msg == "moveRight") {
+    moveRight();
+  }
+
+  if (msg == "moveLeft") {
+    moveLeft();
+  }
+}
+
+void moveRight() {
+  if(servo.attached() == false) {
+    servo.attach(servoPin);
+  }
+  if(servoAngle > 0) {
+    servoAngle -= DEGREES_PER_PRESS;
+    servo.write(servoAngle);
+    EEPROM.write(0, servoAngle);
+    EEPROM.commit();
+  }
+}
+
+void moveLeft() {
+  if(servo.attached() == false) {
+    servo.attach(servoPin);
+  }
+  if(servoAngle < 180) {
+    servoAngle += DEGREES_PER_PRESS;
+    servo.write(servoAngle);
+    EEPROM.write(0, servoAngle);
+    EEPROM.commit();
   }
 }
 
@@ -108,23 +149,24 @@ esp_err_t init_camera() {
   config.pixel_format = PIXFORMAT_JPEG;
 
   // parameters for image quality and size
-  config.frame_size = FRAMESIZE_VGA; // FRAMESIZE_ + QVGA|CIF|VGA|SVGA|XGA|SXGA|UXGA
-  config.jpeg_quality = 10; //10-63 lower number means higher quality
+  config.frame_size = FRAMESIZE_VGA;  // FRAMESIZE_ + QVGA|CIF|VGA|SVGA|XGA|SXGA|UXGA
+  config.jpeg_quality = 10;           //10-63 lower number means higher quality
   config.fb_count = 2;
-  
-  
-  // Camera init
+
   esp_err_t err = esp_camera_init(&config);
   if (err != ESP_OK) {
     Serial.printf("camera init FAIL: 0x%x", err);
     return err;
   }
-  sensor_t * s = esp_camera_sensor_get();
+  sensor_t* s = esp_camera_sensor_get();
   s->set_framesize(s, FRAMESIZE_VGA);
+  s->set_vflip(s, 1);
+  s->set_hmirror(s, 1);
+  // s->set_saturation(s, 2);
+  // s->set_contrast(s, 2);
   Serial.println("camera init OK");
   return ESP_OK;
 };
-
 
 esp_err_t init_wifi() {
   if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {
@@ -158,10 +200,14 @@ esp_err_t init_wifi() {
   return ESP_OK;
 };
 
-
 void setup() {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
+
+  EEPROM.begin(1);
+
   pinMode(flash, OUTPUT);
+  pinMode(servoPin, OUTPUT);
+  servoAngle = EEPROM.read(0);
 
   Serial.begin(115200);
   Serial.setDebugOutput(true);
@@ -174,24 +220,28 @@ void setup() {
   WiFi.onEvent(WiFiGotIP, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
   WiFi.onEvent(WiFiStationDisconnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
 
-
   init_camera();
   init_wifi();
+
+  if(servo.attached()) {
+    servo.detach();
+  }
 }
 
 void loop() {
   if (client.available()) {
-    camera_fb_t *fb = esp_camera_fb_get();
+    camera_fb_t* fb = esp_camera_fb_get();
     if (!fb) {
       Serial.println("img capture failed");
       esp_camera_fb_return(fb);
       ESP.restart();
     }
-    client.sendBinary((const char*) fb->buf, fb->len);
-    Serial.println(fb->len);
+
+    client.sendBinary((const char*)fb->buf, fb->len);
+    // Serial.println(fb->len);
     esp_camera_fb_return(fb);
     client.poll();
-  }else {
+  } else {
     ESP.restart();
   }
 }

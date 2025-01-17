@@ -3,7 +3,6 @@ import fs from 'fs';
 const parseMemoryInfo = () => {
     const data = fs.readFileSync('/proc/meminfo', 'utf-8');
     const lines = data.split('\n');
-    console.log(lines);
     
     const memoryInfo = {};
 

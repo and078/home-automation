@@ -3,6 +3,7 @@ import { StyleSheet, Dimensions, Text, TouchableOpacity, View } from 'react-nati
 import { WebView } from 'react-native-webview';
 import ViewError from '@/components/VideoCams/ViewError';
 import LigtButton from './LigtButton';
+import MoveButton from './MoveButton';
 
 interface VewViewProps {
   name: string,
@@ -42,24 +43,28 @@ const VideoWebView = (props: VewViewProps) => {
             />
           </View>
         </TouchableOpacity>
-        <LigtButton port={props.port}/>
+        <View style={styles.buttons}>
+          <MoveButton port={props.port} direction="moveLeft" />
+          <LigtButton port={props.port} />
+          <MoveButton port={props.port} direction="moveRight" />
+        </View>
       </>
-
     )
-  return (
-    <></>
-  )
 }
 
 const styles = StyleSheet.create({
   webView: {
-    // flex: 1,
-    // margin: 20,
     backgroundColor: "black",
     width: Dimensions.get('window').width - 10,
     height: Dimensions.get('window').height / 2.4,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  buttons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
 
   text: {

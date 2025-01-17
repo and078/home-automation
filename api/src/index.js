@@ -7,6 +7,7 @@ import set_device_route from './routes/set_device_route.js';
 import camera_flash_route from './routes/camera_flash_route.js';
 import cpus_performance_route  from './routes/cpus_performance_route.js';
 import memory_performance_route from './routes/memory_performance_route.js';
+import move_camera_route from './routes/move_camera_route.js';
 
 const PORT = 3001;
 const app = express();
@@ -19,6 +20,7 @@ app.use(set_device_route);
 app.use(camera_flash_route);
 app.use(cpus_performance_route);
 app.use(memory_performance_route);
+app.use(move_camera_route);
 
 app.listen(PORT, () => {
 	console.log(`server listening on port ${PORT}`);
