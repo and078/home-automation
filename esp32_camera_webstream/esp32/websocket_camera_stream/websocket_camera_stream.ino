@@ -8,8 +8,6 @@
 #include "soc/rtc_cntl_reg.h"  //disable brownout problems
 #include "driver/gpio.h"
 #include <ESP32Servo.h>
-#include <EEPROM.h>
-
 
 // configuration for AI Thinker Camera board
 #define PWDN_GPIO_NUM 32
@@ -30,7 +28,7 @@
 #define PCLK_GPIO_NUM 22
 
 const char* ssid = "ssid";    // CHANGE HERE
-const char* password = "rassword";  // CHANGE HERE
+const char* password = "password";  // CHANGE HERE
 
 IPAddress local_IP(192, 168, 1, 210);  // Set your desired IP
 IPAddress gateway(192, 168, 1, 1);     // Set your network gateway
@@ -46,11 +44,12 @@ size_t _jpg_buf_len = 0;
 uint8_t* _jpg_buf = NULL;
 uint8_t state = 0;
 
+
 uint8_t flash = 4;
 
 static const int servoPin = 14;
 const int DEGREES_PER_PRESS = 10;
-byte servoAngle = EEPROM.read(0);
+byte servoAngle = 90;  // EEPROM.read(0);
 
 Servo servo;
 
@@ -102,26 +101,22 @@ void onMessageCallback(WebsocketsMessage message) {
 }
 
 void moveRight() {
-  if(servo.attached() == false) {
+  if (servo.attached() == false) {
     servo.attach(servoPin);
   }
-  if(servoAngle > 0) {
+  if (servoAngle > 0) {
     servoAngle -= DEGREES_PER_PRESS;
     servo.write(servoAngle);
-    EEPROM.write(0, servoAngle);
-    EEPROM.commit();
   }
 }
 
 void moveLeft() {
-  if(servo.attached() == false) {
+  if (servo.attached() == false) {
     servo.attach(servoPin);
   }
-  if(servoAngle < 180) {
+  if (servoAngle < 180) {
     servoAngle += DEGREES_PER_PRESS;
     servo.write(servoAngle);
-    EEPROM.write(0, servoAngle);
-    EEPROM.commit();
   }
 }
 
@@ -203,11 +198,8 @@ esp_err_t init_wifi() {
 void setup() {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
 
-  EEPROM.begin(1);
-
   pinMode(flash, OUTPUT);
   pinMode(servoPin, OUTPUT);
-  servoAngle = EEPROM.read(0);
 
   Serial.begin(115200);
   Serial.setDebugOutput(true);
@@ -223,7 +215,7 @@ void setup() {
   init_camera();
   init_wifi();
 
-  if(servo.attached()) {
+  if (servo.attached()) {
     servo.detach();
   }
 }
@@ -236,7 +228,6 @@ void loop() {
       esp_camera_fb_return(fb);
       ESP.restart();
     }
-
     client.sendBinary((const char*)fb->buf, fb->len);
     // Serial.println(fb->len);
     esp_camera_fb_return(fb);

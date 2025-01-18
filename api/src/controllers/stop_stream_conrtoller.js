@@ -15,6 +15,6 @@ const stopStream = () => {
 }
 
 export default (req, res) => {
-    	stopStream();
-    	res.send({message: "Strean server was killed"});
-    }
+	stopStream();
+	res.send({ message: "Strean server was killed" });
+}
