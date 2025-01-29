@@ -3,7 +3,6 @@ import image from "@/assets/images/house.png";
 import ToggleDevices from "@/components/ToggleDevices/ToggleDevices";
 import VideoDevices from "@/components/VideoCams/VideoDevices";
 import React from "react";
-import HorizontalSpacer from "@/components/other/HorizontalSpacer";
 
 export default function Index() {
 	console.log("Index()");
@@ -14,7 +13,6 @@ export default function Index() {
 				<StatusBar hidden={false}  backgroundColor="black" barStyle="light-content"/>
 				<ImageBackground source={image} style={styles.image}>
 					<VideoDevices />
-					<HorizontalSpacer />
 					<ToggleDevices />
 				</ImageBackground>
 			</View>

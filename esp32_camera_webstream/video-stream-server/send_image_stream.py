@@ -10,6 +10,7 @@ PORT = int(sys.argv[1])
 
 @app.route('/specific-camera-websocket-stream')
 def index():
+    
     return Response(get_image(), mimetype='multipart/x-mixed-replace; boundary=frame')\
 
 

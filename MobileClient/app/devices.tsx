@@ -1,14 +1,18 @@
-import { View, StyleSheet, Text, ImageBackground, Dimensions, StatusBar } from 'react-native'
+import { View, StyleSheet, Text, ImageBackground, Dimensions, StatusBar, TextInput } from 'react-native'
 import image from '@/assets/images/house.png'
 import React from 'react';
+import UserIntut from '@/components/DevicesManage/UserIntut';
 
 const devices = () => {
-	
+
 	return (
 		<View style={styles.container}>
-			<StatusBar hidden={false} backgroundColor="black" barStyle="light-content"/>
+			<StatusBar hidden={false} backgroundColor="black" barStyle="light-content" />
 			<ImageBackground source={image} style={styles.image}>
-				<Text style={styles.text}>Devices</Text>
+				<View style={styles.inputsBox}>
+					<UserIntut label="Device name" />
+					<UserIntut label="Device URL" />
+				</View>
 			</ImageBackground>
 		</View>
 	);
@@ -17,6 +21,12 @@ const devices = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		backgroundColor: 'transparent',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	inputsBox: {
+		// flex: 3,
 		backgroundColor: 'transparent',
 		alignItems: 'center',
 		justifyContent: 'center',

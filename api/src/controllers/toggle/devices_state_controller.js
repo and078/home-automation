@@ -8,6 +8,8 @@ const requestSpecificDevice = async (device) => {
 		const response = await fetch(`${device.url}/relay`, { signal: AbortSignal.timeout(ABORT_SIGNAL_TIMEOUT) });
 		if (response.ok) {
 			const res = await response.json();
+			res.id = device.id;
+			res.url = device.url;
 			return res;
 		}
 	} catch (error) {
@@ -21,7 +23,7 @@ const requestAllDevices = async (devices) => {
 	if (devices) {
 		for (let i = 0; i < devices.length; i++) {
 			arr.push(await requestSpecificDevice(devices[i]));
-		}
+		}		
 		return arr;
 	}
 	return arr;

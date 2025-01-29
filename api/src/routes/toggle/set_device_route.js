@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import set_device_controller from '../controllers/set_device_controller.js';
+import set_device_controller from '../../controllers/toggle/set_device_controller.js';
 import bodyParser from 'body-parser';
 const app = Router();
 

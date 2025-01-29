@@ -32,7 +32,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="video"
         options={{
-          title: 'Video',
+          title: 'Video cams',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'videocam-sharp' : 'videocam-outline'} color={color} size={24} />
           ),
@@ -41,7 +41,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="devices"
         options={{
-          title: 'Devices',
+          title: 'Toggle devices',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'grid-sharp' : 'grid-outline'} color={color} size={24} />
           ),
