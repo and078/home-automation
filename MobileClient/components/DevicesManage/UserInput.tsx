@@ -1,11 +1,11 @@
 import React from 'react'
 import { TextInput, View, Text, StyleSheet, Dimensions } from 'react-native'
 
-interface UserIntutProps {
+interface UserInputProps {
     label: string,
 }
 
-const UserIntut = (props: UserIntutProps) => {
+const UserInput = (props: UserInputProps) => {
   return (
     <View style={styles.container}>
         <Text style={styles.text}>{props.label}</Text>
@@ -20,11 +20,10 @@ const UserIntut = (props: UserIntutProps) => {
 
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
         backgroundColor: 'transparent',
-        // alignItems: 'center',
-        // justifyContent: 'center',
-
+        borderWidth: 2,
+        borderColor: '#0f505588',
+        borderRadius: 10,
     },
     input: {
         height: 40,
@@ -43,4 +42,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default UserIntut
+export default UserInput

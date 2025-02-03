@@ -10,6 +10,8 @@ import memory_performance_route from './routes/performance/memory_performance_ro
 import move_camera_route from './routes/video/move_camera_route.js';
 import add_toggle_device_route from './routes/toggle/add_toggle_device_route.js';
 import delete_toggle_device_router from './routes/toggle/delete_toggle_device_route.js';
+import test_stream_route from './routes/video/test_stream_route.js';
+import edit_toggle_device_route from './routes/toggle/edit_toggle_device_route.js';
 
 const PORT = 3001;
 const app = express();
@@ -25,6 +27,8 @@ app.use(memory_performance_route);
 app.use(move_camera_route);
 app.use(add_toggle_device_route);
 app.use(delete_toggle_device_router);
+app.use(test_stream_route);
+app.use(edit_toggle_device_route);
 
 app.listen(PORT, () => {
 	console.log(`server listening on port ${PORT}`);
