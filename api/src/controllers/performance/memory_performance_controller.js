@@ -2,6 +2,8 @@ import fs from 'fs';
 
 const parseMemoryInfo = () => {
     const data = fs.readFileSync('/proc/meminfo', 'utf-8');
+    
+    
     const lines = data.split('\n');
     
     const memoryInfo = {};
@@ -18,10 +20,10 @@ const parseMemoryInfo = () => {
 }
 
 export default async (_, res) => {
-    const memoryInfo = parseMemoryInfo();
+    const memoryInfo = parseMemoryInfo();    
     res.send({
         data: {
-            MemoryPerformance: ((memoryInfo["MemTotal"] - memoryInfo["MemFree"]) / memoryInfo["MemTotal"]) * 100,
+            MemoryPerformance: ((memoryInfo["MemTotal"] - memoryInfo["MemAvailable"]) / memoryInfo["MemTotal"]) * 100,
         },
     });
 };

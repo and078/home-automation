@@ -9,4 +9,4 @@ sudo tmux send-keys -t "$SESSION_NAME" "cd $PATH_TO_SCRIPT && npm run dev" C-m
 
 sudo tmux detach -s "$SESSION_NAME"
 
-echo "Tmux session '$SESSION_NAME' created and nodejs express script started in detached m:ode."
+echo "Tmux session '$SESSION_NAME' created and nodejs express script started in detached mode."

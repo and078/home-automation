@@ -23,7 +23,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          
+
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'home-sharp' : 'home-outline'} color={color} size={24} />
           ),
@@ -32,7 +32,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="video"
         options={{
-          title: 'Video cams',
+          title: 'Video',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'videocam-sharp' : 'videocam-outline'} color={color} size={24} />
           ),
@@ -41,7 +41,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="devices"
         options={{
-          title: 'Toggle devices',
+          title: 'Devices',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'grid-sharp' : 'grid-outline'} color={color} size={24} />
           ),
@@ -53,6 +53,15 @@ export default function TabLayout() {
           title: 'Performance',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'speedometer' : 'speedometer-outline'} color={color} size={24} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="server"
+        options={{
+          title: 'Server',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'server' : 'server-outline'} color={color} size={24} />
           ),
         }}
       />

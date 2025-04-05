@@ -2,16 +2,21 @@ import sys
 import time
 from io import BytesIO
 from PIL import Image
-from flask import Flask, Response
-from base64 import b64encode
-app = Flask(__name__)
+from flask import Flask, Response, render_template
+# from base64 import b64encode
+app = Flask(__name__) #template_folder='templates'
 
 PORT = int(sys.argv[1])
 
 @app.route('/specific-camera-websocket-stream')
 def index():
-    
     return Response(get_image(), mimetype='multipart/x-mixed-replace; boundary=frame')\
+    #  return render_template('index.html')
+
+    
+# @app.route('/video_feed')
+# def video_feed():
+#     return Response(get_image(), mimetype='multipart/x-mixed-replace; boundary=frame')\
 
 
 def get_image():
