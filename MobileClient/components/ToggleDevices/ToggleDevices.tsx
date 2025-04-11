@@ -2,6 +2,7 @@ import { Text, View, StyleSheet, FlatList, TouchableOpacity, Dimensions } from "
 import { useEffect, useState } from "react";
 import DeviceBox from "./DeviceBox";
 import React from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface deviceData {
 	status: Number,
@@ -15,10 +16,16 @@ const ToggleDevices = () => {
 	const [devices, setDevices] = useState<Array<deviceData>>([]);
 
 	useEffect(() => {
-		setTimeout(() => {
-			getAlldevices(toggleDevicesApi);
-		}, 500);
-	}, [])
+		const initDevices = async () => {
+			let address: string = '';
+			const a = await AsyncStorage.getItem('serverIp');
+			if(a) {
+				address = a;
+				await getAlldevices(`${address}${toggleDevicesApi}`);
+			}
+		}
+		initDevices()
+	}, []) 
 
 	const getAlldevices = async (url: string | undefined) => {
 		try {
@@ -35,7 +42,12 @@ const ToggleDevices = () => {
 
 	return (
 		<View style={styles.devices}>
-			<TouchableOpacity onPress={() => getAlldevices(toggleDevicesApi)}>
+			<TouchableOpacity onPress={async () => {
+				const a = await AsyncStorage.getItem('serverIp');
+				if(a) {
+					getAlldevices(`${a}${toggleDevicesApi}`)
+				}
+			}}>
 				<Text style={styles.text}>Refresh devices</Text>
 			</TouchableOpacity>
 			<FlatList

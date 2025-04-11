@@ -1,26 +1,38 @@
 import { View, StyleSheet, Text, ImageBackground, Dimensions, FlatList, StatusBar } from 'react-native'
 import image from '@/assets/images/house.png'
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import CircularProgress from '@/components/other/CircularProgress';
 import { useFocusEffect } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const performance = () => {
 	console.log("PERFORMANCE");
-	const cpuUsageUrl = process.env.EXPO_PUBLIC_CPUS_PERFORMANCE;
-	const memoruUsageUrl = process.env.EXPO_PUBLIC_MEMORY_PERFORMANCE;
+	const cpuUsageEndpoint = process.env.EXPO_PUBLIC_CPUS_PERFORMANCE;
+	const memoruUsageEndpoint = process.env.EXPO_PUBLIC_MEMORY_PERFORMANCE;
 	const [cpuProgress, setCpuProgress] = useState({});
 	const [memoryProgress, setMemoryProgress] = useState(0);
+	// const [address, setAddress] = useState<string>('');
 
 	useFocusEffect(
 		useCallback(() => {
-			console.log("useFocusEffect");
+			let address: string = '';
+			const fetchFromStoredAddress = async () => {
+				try {
+					const addr = await AsyncStorage.getItem('serverIp');
+					if (addr) {
+						address = addr;
+					}
+				} catch (error) {
+					console.log(error);
+				}
+			}
+			fetchFromStoredAddress();
 			const interval = setInterval(async () => {
-				await getCPUProgress();
-				await geMemogyProgress();
+				await getCPUProgress(`${address}${cpuUsageEndpoint}`);
+				await geMemogyProgress(`${address}${memoruUsageEndpoint}`);
 			}, 1000);
 			return () => {
 				clearInterval(interval);
-				console.log("useFocusEffect cleanup");
 			}
 		}, [])
 	);
@@ -33,25 +45,35 @@ const performance = () => {
 		return arr;
 	}
 
-	const getCPUProgress = async () => {
-		if (cpuUsageUrl) {
-			const response = await fetch(cpuUsageUrl);
-			const data = await response.json();
-			setCpuProgress(data.data.CPUsPerformance);
+	const getCPUProgress = async (url: string) => {
+		if (cpuUsageEndpoint) {
+			try {
+				const response = await fetch(url);
+				const data = await response.json();
+				setCpuProgress(data.data.CPUsPerformance);
+			} catch (error) {
+				console.log("getCPUProgress", error);
+			}
+
 		}
 	}
 
-	const geMemogyProgress = async () => {
-		if (memoruUsageUrl) {
-			const response = await fetch(memoruUsageUrl);
-			const data = await response.json();
-			setMemoryProgress(data.data.MemoryPerformance);
+	const geMemogyProgress = async (url: string) => {
+		if (memoruUsageEndpoint) {
+			try {
+				const response = await fetch(url);
+				const data = await response.json();
+				setMemoryProgress(data.data.MemoryPerformance);
+			} catch (error) {
+				console.log("geMemogyProgress", error);
+			}
+
 		}
 	}
 
 	return (
 		<View style={styles.container}>
-			<StatusBar hidden={false}  backgroundColor="black" barStyle="light-content"/>
+			<StatusBar hidden={false} backgroundColor="black" barStyle="light-content" />
 			<ImageBackground source={image} style={styles.image}>
 				<View style={styles.innerContainer}>
 					<Text style={styles.text}>CPU Usage</Text>

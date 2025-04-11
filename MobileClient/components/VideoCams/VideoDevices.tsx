@@ -2,6 +2,7 @@ import { Text, View, StyleSheet, FlatList, TouchableOpacity, ImageBackground, Di
 import React, { useEffect, useState } from 'react'
 import VideoDevice from "./VideoDevice";
 import VideoWebView from "./VideoWebView";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface videoDeviceData {
 	name: string,
@@ -25,28 +26,43 @@ const VideoDevices = () => {
 	const [showWebView, setShowWebView] = useState<boolean>(false);
 	const [pressedDevice, setPressedDevice] = useState<pressedDevice>({ name: '', ip: '', port: 0 });
 
+
+
 	useEffect(() => {
-		getAllVideoDevices(devicesUrl);
+		let address: string = '';
+		const getAllVideoDevices = async () => {
+			try {
+				const getAddress = async () => {
+					const a = await AsyncStorage.getItem('serverIp');
+					if (a) {
+						address = a;
+						console.log("VideoDevices", `${address}${devicesUrl}`);
+						const res = await fetch(`${address}${devicesUrl}`);
+						const data = await res.json();
+						setVideoDevices(data.data);
+					};
+				}
+				getAddress();
+			} catch (error) {
+				console.log(error);
+			}
+		}
+		getAllVideoDevices();
 	}, [])
 
-	const getAllVideoDevices = async (url: string | undefined) => {
-		if (!url) {
-			throw new Error("URL is undefined");
-		  }
-		try {
-			const res = await fetch(url);
-			const data = await res.json();
-			setVideoDevices(data.data);
-		} catch (error) {
-			console.log(error);
-		}
-	}
+
 
 	const turnOnStream = async (cameraUrl: Number) => {
-		console.log(cameraUrl);
-		
 		try {
-			const res = await fetch(`${startStream}${cameraUrl}`);
+			let address: string = '';
+			let a = await AsyncStorage.getItem('serverIp');
+			if (a) {
+				address = a;
+				const res = await fetch(`${address}${startStream}${cameraUrl}`);
+				const data = await res.json();
+				console.log(data);
+				console.log(`VideoDevices ${address}${startStream}${cameraUrl}`);
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -54,8 +70,14 @@ const VideoDevices = () => {
 
 	const turnOffStream = async () => {
 		try {
-			const res = await fetch(`${stopStream}`);
-			const data = await res.json();
+			let address: string = '';
+			let a = await AsyncStorage.getItem('serverIp');
+			if (a) {
+				address = a;
+				const res = await fetch(`${address}${stopStream}`);
+				const data = await res.json();
+				console.log(data);
+			}
 		} catch (error) {
 			console.log(error);
 		}

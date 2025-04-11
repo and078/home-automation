@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Dimensions, Text, TouchableOpacity, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import ViewError from '@/components/VideoCams/ViewError';
 import LigtButton from './LigtButton';
 import MoveButton from './MoveButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface VewViewProps {
   name: string,
@@ -17,6 +18,21 @@ const VideoWebView = (props: VewViewProps) => {
   const streamUrl = process.env.EXPO_PUBLIC_STREAM_API;
 
   const [key, setKey] = useState<bigint>(0n);
+  const [addr, setAddr] = useState<string>('');
+
+	useEffect(() => {
+		const getAddress = async () => {
+      let address: string = '';
+			const a = await AsyncStorage.getItem('serverIp');
+			if (a) {
+        let replaced = a.substring(0, a.length - 4) + '1234';
+        address = replaced;
+        setAddr(address);
+      }
+      console.log('webview',address);
+		}
+		getAddress();
+	}, [])
 
   const handleWebViewError = () => {
     setTimeout(() => {
@@ -36,7 +52,7 @@ const VideoWebView = (props: VewViewProps) => {
             <Text style={styles.text}>{props.name}</Text>
             <WebView
               style={styles.webView}
-              source={{ uri: streamUrl }}
+              source={{ uri: `${addr}${streamUrl}` }}
               key={key}
               onError={handleWebViewError}
               renderError={e => <ViewError name={e} />}

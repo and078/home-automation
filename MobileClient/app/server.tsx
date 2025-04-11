@@ -6,8 +6,8 @@ import { useFocusEffect } from 'expo-router';
 
 export const server = () => {
     console.log("SERVER");
-    const [currentIp, setCurrentIp] = useState<string>('');
-    const [currentPort, setCurrentPort] = useState<string>('');
+    const [currentIp, setCurrentIp] = useState<string>('');4
+    const [ipText, setIpText] = useState<string>(currentIp);
 
     useFocusEffect(
         useCallback(() => {
@@ -19,23 +19,17 @@ export const server = () => {
         console.log('getStorageData');
         try {
             let ip = await AsyncStorage.getItem("serverIp");
-            let port = await AsyncStorage.getItem("serverPort");
             if (ip) setCurrentIp(ip);
-            if (port) setCurrentPort(port);
-            console.log(ip, port);
+            console.log(ip);
 
         } catch (error) {
-            console.log(error);
+            console.log("server error", error);
         }
     }
 
-    const [ipText, setIpText] = useState<string>(currentIp);
-    const [potrText, setPortText] = useState<string>(currentPort);
-
     const handleSaveBtn = async () => {
         try {
-            await AsyncStorage.setItem("serverIp", ipText)
-            await AsyncStorage.setItem("serverPort", potrText)
+            await AsyncStorage.setItem("serverIp", ipText);
         } catch (error) {
             console.log(error);
         }
@@ -43,9 +37,7 @@ export const server = () => {
 
     const cleanupServerInfo = () => {
         setCurrentIp('');
-        setCurrentPort('');
         setIpText('');
-        setPortText('');
     }
 
     return (
@@ -56,21 +48,11 @@ export const server = () => {
                     <Text style={styles.mainText}>Server settings</Text>
                 </View>
                 <View style={styles.inputView}>
-                    <Text style={styles.text}>Server IP</Text>
+                    <Text style={styles.text}>Server address:</Text>
                     <TextInput
                         style={styles.textInput}
                         onChangeText={setIpText}
                         value={ipText ? ipText : currentIp}
-                        keyboardType='numeric'
-                    />
-                </View>
-                <View style={styles.inputView}>
-                    <Text style={styles.text}>Port</Text>
-                    <TextInput
-                        style={styles.textInput}
-                        onChangeText={setPortText}
-                        value={potrText ? potrText : currentPort}
-                        keyboardType='numeric'
                     />
                 </View>
                 <View style={styles.btns}>

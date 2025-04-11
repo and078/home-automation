@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 import { useEffect, useState } from 'react'
 import { Text, View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
@@ -23,20 +24,24 @@ const DeviceBox = (props: DeviceBoxProps) => {
 	}
 
 	useEffect(() => {
+		let address: string = '';
 		setColorByState(props.state);
-		const timeout = setTimeout(() => {
-			postToDevice(props.state, props.deviceName);
-		}, 300);
-		return clearTimeout(timeout);
-	}, []);
+		const initDevice = async () => {	
+			const a = await AsyncStorage.getItem('serverIp');
+			if(a) {
+				address = a;
+				await postToDevice(address, props.state, props.deviceName);
+			}
+		}
+		initDevice()
+	}, [])
 
-	const postToDevice = async (status: Number, name: string) => {
+	const postToDevice = async (addr: string, status: Number, name: string) => {
 		try {
 			if(setToggleDeviceUrl) {
-				await fetch(`${setToggleDeviceUrl}?name=${name}&state=${status}`)
+				await fetch(`${addr}${setToggleDeviceUrl}?name=${name}&state=${status}`)
 				.then(response => response.json())
 				.then(response => {
-					// console.log(response);
 					setBoxState(response.status);
 					setColorByState(response.status);
 				})
@@ -50,10 +55,12 @@ const DeviceBox = (props: DeviceBoxProps) => {
 	return (
 		<>
 			<TouchableOpacity
-				onPress={ () => {
-					console.log(boxState);
-					if (boxState === 0) postToDevice(1, props.deviceName);
-					if (boxState === 1) postToDevice(0, props.deviceName);
+				onPress={ async () => {
+					const a = await AsyncStorage.getItem('serverIp');
+					if(a) {
+						if (boxState === 0) postToDevice(a, 1, props.deviceName);
+					if (boxState === 1) postToDevice(a, 0, props.deviceName);
+					}
 				}}>
 				<View style={{
 					flex: 1,
