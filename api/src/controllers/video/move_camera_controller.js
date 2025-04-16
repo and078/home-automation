@@ -1,6 +1,6 @@
 const fetchMove = async (port, direction) => {
     try {
-        await fetch(`http://192.168.1.224:${port}/?message=${direction}`);
+        await fetch(`http://192.168.100.224:${port}/?message=${direction}`);
     }
     catch (error) {
         console.log(error);

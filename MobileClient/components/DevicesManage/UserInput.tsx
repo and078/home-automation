@@ -3,6 +3,7 @@ import { TextInput, View, Text, StyleSheet, Dimensions } from 'react-native'
 
 interface UserInputProps {
     label: string,
+    deviceId: Number
 }
 
 const UserInput = (props: UserInputProps) => {

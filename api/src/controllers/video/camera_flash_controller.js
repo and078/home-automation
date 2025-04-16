@@ -1,6 +1,6 @@
 const fetchFlash = async (port, state) => {
     try {
-        await fetch(`http://192.168.1.224:${port}?message=${state}`)
+        await fetch(`http://192.168.100.224:${port}?message=${state}`)
     } catch (error) {
         console.log(error);
     }

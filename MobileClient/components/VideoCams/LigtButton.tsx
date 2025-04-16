@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
 
@@ -10,13 +11,19 @@ const LigtButton = (props: LightButtonProps) => {
 	const [text, setText] = useState<string>("Light on");
 	const [isOn, setIsOn] = useState<boolean>(true);
 
-	const handlePress = async (state: boolean = false) => {		
+	const handlePress = async (state: boolean = false) => {
 		setIsOn(!isOn);
 		setText(state ? "Light off" : "Light on");
 		let stateString = 'flashOFF';
 		stateString = state ? 'flashON' : 'flashOFF';
+		
 		try {
-			await fetch(`${flashUrl}${props.port.valueOf() + 1}&${stateString}`);
+			const a = await AsyncStorage.getItem('serverIp');
+			if(a) {
+				await fetch(`${a}${flashUrl}${props.port.valueOf() + 1}&${stateString}`);
+				console.log(`${a}${flashUrl}${props.port.valueOf() + 1}&${stateString}`);
+				
+			}
 		} catch (error) {
 			console.log(error);
 		}

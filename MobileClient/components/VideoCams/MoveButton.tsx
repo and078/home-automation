@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
 
@@ -17,7 +18,11 @@ const MoveButton = (props: MoveButtonProps) => {
 
     const handlePress = async (direction: string) => {
         try {
-            await fetch(`${movehUrl}${props.port.valueOf() + 1}&${direction}`);
+            const a = await AsyncStorage.getItem('serverIp');
+            if(a) {
+                await fetch(`${a}${movehUrl}${props.port.valueOf() + 1}&${direction}`);
+                console.log(`${a}${movehUrl}${props.port.valueOf() + 1}&${direction}`);
+            }
         } catch (error) {
             console.log(error);
         }

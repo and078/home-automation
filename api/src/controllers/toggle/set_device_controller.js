@@ -1,5 +1,3 @@
-import mysql from "mysql2/promise";
-
 const ABORT_SIGNAL_TIMEOUT = 1000;
 const TOGGLE_DEVICES_SQL = 'SELECT * FROM toggle_devices;';
 
@@ -12,25 +10,20 @@ const handleResponseFromEsp = async (response, device, res) => {
 
 const requestToESP = async (localAddress, status, device, res) => {
 	try {
-		await fetch(`${localAddress}/set?status=${status}`, { signal: AbortSignal.timeout(ABORT_SIGNAL_TIMEOUT) })
-			.then(response => response.json())
-			.then(async data => {
-				await handleResponseFromEsp(data.status, device, res);
-			})
+		const response = await fetch(`${localAddress}/set?status=${status}`, { signal: AbortSignal.timeout(ABORT_SIGNAL_TIMEOUT) });
+		const data = await response.json();
+		if(data) {
+			await handleResponseFromEsp(data.status, device, res);
+		}
 	} catch (error) {
-		handleResponseFromEsp(-1, device, res);
-		console.log("Api error post to device:", device, error);
+		console.log("Api error post to device:", device, error.message);
 	}
 }
 
+
 export default async (req, res) => {
-	
-	const db = await mysql.createConnection({
-		host: '127.0.0.1',
-		user: 'and078',
-		database: 'home_automation_db',
-		password: 'mysqlpswd',
-	});
+
+	const { db } = req.app.locals;
 	try {
 		const [rows] = await db.execute(TOGGLE_DEVICES_SQL);
 		if(rows) {			
@@ -41,5 +34,4 @@ export default async (req, res) => {
 	} catch (error) {
 		console.log(error);
 	}
-	await db.end();
 }

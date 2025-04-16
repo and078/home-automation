@@ -17,11 +17,10 @@ const ToggleDevices = () => {
 
 	useEffect(() => {
 		const initDevices = async () => {
-			let address: string = '';
 			const a = await AsyncStorage.getItem('serverIp');
 			if(a) {
-				address = a;
-				await getAlldevices(`${address}${toggleDevicesApi}`);
+				const res = await getAlldevices(`${a}${toggleDevicesApi}`);
+				console.log(res);
 			}
 		}
 		initDevices()
@@ -32,11 +31,12 @@ const ToggleDevices = () => {
 			if (url) {
 				const res = await fetch(url);
 				const data = await res.json();
-				console.log(data.data);
 				setDevices(data.data);
+				return data.data; //unchecked
 			}
 		} catch (error) {
 			console.log(error);
+			return {data: null}; //unchecked
 		}
 	}
 
@@ -57,9 +57,9 @@ const ToggleDevices = () => {
 					return (
 						<>
 							<DeviceBox
-								deviceName={item.name}
-								state={item.status}
-								type={item.type}
+								deviceName={item?.name}
+								state={item?.status}
+								type={item?.type}
 							/>
 						</>
 					)

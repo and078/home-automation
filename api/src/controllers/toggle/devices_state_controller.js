@@ -1,49 +1,44 @@
-import mysql from "mysql2/promise";
-
 const TOGGLE_DEVICES_SQL = 'SELECT * FROM toggle_devices;';
 const ABORT_SIGNAL_TIMEOUT = 1000;
 
 const requestSpecificDevice = async (device) => {
-	
 	try {
 		const response = await fetch(`${device.url}/relay`, { signal: AbortSignal.timeout(ABORT_SIGNAL_TIMEOUT) });
 		if (response.ok) {
-			const res = await response.json();
-			res.id = device.id;
-			res.url = device.url;
-			return res;
+			const data = await response.json();
+			data.id = device.id;
+			data.url = device.url;
+			return data;
 		}
 	} catch (error) {
-		console.error("SpecificDevice error: ", error);
-		return { status: -1, name: device.name, type: device.type };
+		console.error(`SpecificDevice (${device.name}) url: ${device.url} error: `, error.message);
+		return { status: -1, name: device.name, type: device.type, id: device.id, url: device.url };
 	}
 }
 
 const requestAllDevices = async (devices) => {
-	const arr = [];
-	if (devices) {
-		for (let i = 0; i < devices.length; i++) {
-			arr.push(await requestSpecificDevice(devices[i]));
-		}		
-		return arr;
-	}
-	return arr;
+	const results = [];
+	await Promise.allSettled(
+		devices.map(d => requestSpecificDevice(d))
+	)
+		.then(rs => rs.forEach(r => results.push(r.value)));
+	return results;
 }
 
-export default async (_, res) => {
-	const db = await mysql.createConnection({
-		host: '127.0.0.1',
-		user: 'and078',
-		database: 'home_automation_db',
-		password: 'mysqlpswd',
-	});
+export default async (req, res) => {
+	const { db } = req.app.locals;
 	try {
-		const [rows] = await db.execute(TOGGLE_DEVICES_SQL);		
-		res.send({
-			data: await requestAllDevices(rows)
-		});
+		let devices = [];
+		const [rows] = await db.execute(TOGGLE_DEVICES_SQL);
+		if (rows) {
+			devices = await requestAllDevices(rows);
+			if (devices) {
+				res.send({
+					data: devices
+				});
+			}
+		}
 	} catch (error) {
-		console.log(error);
+		console.log('DB_ERROR', error);
 	}
-	await db.end();
 }

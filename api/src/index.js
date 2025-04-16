@@ -1,4 +1,6 @@
 import express from 'express';
+import dotenv from 'dotenv';
+import { createBDPool } from './database/db.js';
 import devices_state_route from './routes/toggle/devices_state_route.js';
 import video_devices_route from './routes/video/video_devices_route.js';
 import start_stream_route from './routes/video/start_stream_route.js';
@@ -12,9 +14,27 @@ import add_toggle_device_route from './routes/toggle/add_toggle_device_route.js'
 import delete_toggle_device_router from './routes/toggle/delete_toggle_device_route.js';
 import test_stream_route from './routes/video/test_stream_route.js';
 import edit_toggle_device_route from './routes/toggle/edit_toggle_device_route.js';
+import ticker from './services/fetchToggleDevicesTick.js';
 
-const PORT = 3001;
+dotenv.config();
+
+const PORT = process.env.PORT;
 const app = express();
+
+(async () => {
+	try {
+		const pool = await createBDPool(); 
+		app.locals.db = pool;
+
+		app.listen(PORT, () => {
+			console.log(`server listening on port ${PORT}`);
+		});
+		ticker(2000);
+	} catch (error) {
+		console.error('Failed to initialize application:', error);
+		process.exit(1);
+	}
+})();
 
 app.use(devices_state_route);
 app.use(video_devices_route);
@@ -30,6 +50,4 @@ app.use(delete_toggle_device_router);
 app.use(test_stream_route);
 app.use(edit_toggle_device_route);
 
-app.listen(PORT, () => {
-	console.log(`server listening on port ${PORT}`);
-});
+export default app;
