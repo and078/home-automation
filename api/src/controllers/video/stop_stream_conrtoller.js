@@ -3,8 +3,8 @@ import path from 'path';
 
 const __dirname = path.resolve();
 
-const stopStream = () => {
-	exec(`${__dirname}/bash-scripts/kill-stream.sh`, (err, stdout, stderr) => {
+const stopStream = (port) => {
+	exec(`${__dirname}/bash-scripts/kill-stream.sh ${port}`, (err, stdout, stderr) => {
 		if (err) {
 			console.error('error: ', err)
 		} else {
@@ -15,6 +15,6 @@ const stopStream = () => {
 }
 
 export default (req, res) => {
-	stopStream();
+	stopStream(req.params.port);
 	res.send({ message: "Strean server was killed" });
 }

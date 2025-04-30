@@ -1,5 +1,5 @@
 const TOGGLE_DEVICES_SQL = 'SELECT * FROM toggle_devices;';
-const ABORT_SIGNAL_TIMEOUT = 1000;
+const ABORT_SIGNAL_TIMEOUT = 200;
 
 const requestSpecificDevice = async (device) => {
 	try {

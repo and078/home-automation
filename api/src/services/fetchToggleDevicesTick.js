@@ -7,8 +7,9 @@ const ABORT_SIGNAL_TIMEOUT = 1000;
 
 const pinch = async (url) => {
     try {
-        const res = await fetch(`${url}/relay`, { signal: AbortSignal.timeout(ABORT_SIGNAL_TIMEOUT) });
-        const data = await res.json();
+        //const res = 
+	await fetch(`${url}/relay`, { signal: AbortSignal.timeout(ABORT_SIGNAL_TIMEOUT) });
+        //const data = await res.json();
         // console.log(data);
     } catch (error) {
         // console.log(error.message);

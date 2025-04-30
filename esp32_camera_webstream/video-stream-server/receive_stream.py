@@ -1,48 +1,45 @@
 import asyncio
 import websockets
 import sys
-from io import BytesIO
-from PIL import Image, UnidentifiedImageError
+import os
+from PIL import Image
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import threading
+import time
+
+image_name = f"{sys.argv[1]}.jpg"
+image_path = os.path.join(os.getcwd(), image_name)
+placeholder_image_path = os.path.join(os.getcwd(), f"placeholder_{image_name}")
 
 WS_PORT = int(sys.argv[1])
 HTTP_PORT = WS_PORT + 1
 
-connected_clients = set()
-event_loop = None  # To store the WebSocket event loop
+websocket = None
+event_loop = None
 
+if not os.path.exists(image_path):
+    image = Image.new(mode="RGB", size=(640, 480), color="black")
+    image.save(image_path)
 
-def is_valid_image(image_bytes):
-    try:
-        Image.open(BytesIO(image_bytes))
-        return True
-    except UnidentifiedImageError:
-        print("Image invalid")
-        return False
+if not os.path.exists(placeholder_image_path):
+    image = Image.new(mode="RGB", size=(640, 480), color="black")
+    image.save(placeholder_image_path)
 
-
-async def handle_connection(websocket, path):
-    connected_clients.add(websocket)
+async def handle_connection(ws):
     try:
         while True:
-            message = await websocket.recv()
-            print(len(message))
-            if len(message) > 5000:
-                if is_valid_image(message):
-                    with open("image.jpg", "wb") as f:
-                        f.write(message)
-                else:
-                    await websocket.send("restart")
+            time.sleep(0.02)
+            message = await ws.recv()
+            if len(message) > 3000:
+                with open(image_path, "wb") as f:
+                    f.write(message)
     except websockets.exceptions.ConnectionClosed:
-        pass
-    finally:
-        connected_clients.remove(websocket)
+        print('websockets.exceptions.ConnectionClosed')
 
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
-        global event_loop  # Access the shared event loop
+        global event_loop
         query = self.path.split('?')
         if len(query) > 1:
             query_params = query[1]
@@ -50,7 +47,6 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             message = params.get("message", None)
             print(message)
             if message:
-                # Schedule the coroutine in the WebSocket event loop
                 asyncio.run_coroutine_threadsafe(
                     send_to_clients(message), event_loop
                 )
@@ -60,8 +56,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
 
 async def send_to_clients(message):
-    for websocket in connected_clients:
-        await websocket.send(message)
+    await websocket.send(message)
 
 
 def start_http_server():
@@ -71,14 +66,12 @@ def start_http_server():
 
 
 async def main():
-    global event_loop  # Store the event loop for use in the HTTP server
+    global event_loop
     event_loop = asyncio.get_event_loop()
 
-    # Start HTTP server in a separate thread
     http_thread = threading.Thread(target=start_http_server, daemon=True)
     http_thread.start()
 
-    # Start WebSocket server
     server = await websockets.serve(handle_connection, '0.0.0.0', WS_PORT)
     print(f"WebSocket server running on ws://0.0.0.0:{WS_PORT}")
     await server.wait_closed()

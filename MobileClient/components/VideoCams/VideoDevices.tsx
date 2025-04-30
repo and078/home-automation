@@ -52,31 +52,22 @@ const VideoDevices = () => {
 
 
 
-	const turnOnStream = async (cameraUrl: Number) => {
+	const turnOnStream = async (cameraPort: Number) => {
 		try {
-			let address: string = '';
 			let a = await AsyncStorage.getItem('serverIp');
 			if (a) {
-				address = a;
-				const res = await fetch(`${address}${startStream}${cameraUrl}`);
-				const data = await res.json();
-				console.log(data);
-				console.log(`VideoDevices ${address}${startStream}${cameraUrl}`);
+				await fetch(`${a}${startStream}${cameraPort}`);
 			}
 		} catch (error) {
 			console.log(error);
 		}
 	}
 
-	const turnOffStream = async () => {
+	const turnOffStream = async (cameraPort: Number) => {
 		try {
-			let address: string = '';
 			let a = await AsyncStorage.getItem('serverIp');
 			if (a) {
-				address = a;
-				const res = await fetch(`${address}${stopStream}`);
-				const data = await res.json();
-				console.log(data);
+				await fetch(`${a}${stopStream}${cameraPort}`);
 			}
 		} catch (error) {
 			console.log(error);
@@ -112,7 +103,7 @@ const VideoDevices = () => {
 						port={pressedDevice.port}
 						ip={pressedDevice.ip}
 						sendState={(pressed) => {
-							turnOffStream();
+							turnOffStream(pressedDevice.port);
 							setShowWebView(pressed);
 						}} />
 				</View>

@@ -52,7 +52,7 @@ const VideoWebView = (props: VewViewProps) => {
             <Text style={styles.text}>{props.name}</Text>
             <WebView
               style={styles.webView}
-              source={{ uri: `${addr}${streamUrl}` }}
+              source={{ uri: `${addr}${streamUrl}-${props.port}` }}
               key={key}
               onError={handleWebViewError}
               renderError={e => <ViewError name={e} />}

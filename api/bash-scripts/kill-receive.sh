@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SESSION_NAME="python_receive_stream"
+SESSION_NAME="python_receive_stream_$1"
 
 if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
   tmux kill-session -t "$SESSION_NAME"
