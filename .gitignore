@@ -1,4 +1,5 @@
 api/node_modules
+api/video-records
 .env
 .env.production
 MobileClient/eas.json

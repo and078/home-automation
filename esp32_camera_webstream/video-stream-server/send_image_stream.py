@@ -19,7 +19,7 @@ PORT = int(sys.argv[1]) + 2
 def index():
     return Response(get_image(), mimetype='multipart/x-mixed-replace; boundary=frame')\
 
-@app.route('/start_recording', methods=['POST'])
+@app.route('/start-recording', methods=['POST'])
 def start_recording():
     data = request.json
     stream_url = data.get('stream_url')
@@ -37,7 +37,7 @@ def start_recording():
         'recording': recorder.is_recording()
     })
 
-@app.route('/stop_recording', methods=['POST'])
+@app.route('/stop-recording', methods=['POST'])
 def stop_recording():
     success = recorder.stop_recording()
     return jsonify({
@@ -45,7 +45,7 @@ def stop_recording():
         'recording': recorder.is_recording()
     })
 
-@app.route('/status', methods=['GET'])
+@app.route('/recording-status', methods=['GET'])
 def status():
     return jsonify({
         'recording': recorder.is_recording()

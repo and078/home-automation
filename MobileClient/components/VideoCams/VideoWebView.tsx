@@ -5,6 +5,7 @@ import ViewError from '@/components/VideoCams/ViewError';
 import LigtButton from './LigtButton';
 import MoveButton from './MoveButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RecordButton from './RecordButton';
 
 interface VewViewProps {
   name: string,
@@ -61,6 +62,7 @@ const VideoWebView = (props: VewViewProps) => {
         <View style={styles.buttons}>
           <MoveButton port={props.port} direction="moveLeft" />
           <LigtButton port={props.port} />
+          <RecordButton port={props.port} name={props.name} />
           <MoveButton port={props.port} direction="moveRight" />
         </View>
       </>
