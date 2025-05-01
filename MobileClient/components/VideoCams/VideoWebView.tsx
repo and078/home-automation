@@ -22,14 +22,13 @@ const VideoWebView = (props: VewViewProps) => {
 
 	useEffect(() => {
 		const getAddress = async () => {
-      let address: string = '';
 			const a = await AsyncStorage.getItem('serverIp');
 			if (a) {
-        let replaced = a.substring(0, a.length - 4) + '1234';
-        address = replaced;
-        setAddr(address);
+        let newPort = Number(props.port) + 2;
+        let replaced = a.substring(0, a.length - 4) + `${newPort}`;
+        setAddr(replaced);
       }
-      console.log('webview',address);
+      console.log('webview',`${addr}${streamUrl}-${props.port}`);
 		}
 		getAddress();
 	}, [])

@@ -29,15 +29,13 @@ const VideoDevices = () => {
 
 
 	useEffect(() => {
-		let address: string = '';
 		const getAllVideoDevices = async () => {
 			try {
 				const getAddress = async () => {
 					const a = await AsyncStorage.getItem('serverIp');
 					if (a) {
-						address = a;
-						console.log("VideoDevices", `${address}${devicesUrl}`);
-						const res = await fetch(`${address}${devicesUrl}`);
+						console.log("VideoDevices", `${a}${devicesUrl}`);
+						const res = await fetch(`${a}${devicesUrl}`);
 						const data = await res.json();
 						setVideoDevices(data.data);
 					};

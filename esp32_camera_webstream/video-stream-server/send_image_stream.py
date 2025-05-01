@@ -13,7 +13,7 @@ image_name = f"{sys.argv[1]}.jpg"
 placeholder_image_path = os.path.join(os.getcwd(), f"placeholder_{image_name}")
 image_path = os.path.join(os.getcwd(), image_name)
 
-PORT = int(sys.argv[1])
+PORT = int(sys.argv[1]) + 2
 
 @app.route(f"/specific-camera-websocket-stream-{sys.argv[1]}")
 def index():
@@ -54,7 +54,7 @@ def status():
 
 def get_image():
     while True:
-        time.sleep(0.04)
+        time.sleep(0.02)
         try:
             with open(image_path, "rb") as f:
                 image_bytes = f.read()
@@ -81,4 +81,4 @@ def get_image():
                    b'Content-Type: image/jpeg\r\n\r\n' + img_bytes + b'\r\n')
             continue
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=False, threaded=True, port=1234)
+    app.run(host='0.0.0.0', debug=False, threaded=True, port=PORT)

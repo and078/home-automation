@@ -1,8 +1,9 @@
 import asyncio
+from io import BytesIO
 import websockets
 import sys
 import os
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import threading
 import time
@@ -17,6 +18,14 @@ HTTP_PORT = WS_PORT + 1
 websocket = None
 event_loop = None
 
+def is_valid_image(image_bytes):
+     try:
+         Image.open(BytesIO(image_bytes))
+         return True
+     except UnidentifiedImageError:
+         print("image invalid")
+         return False
+
 if not os.path.exists(image_path):
     image = Image.new(mode="RGB", size=(640, 480), color="black")
     image.save(image_path)
@@ -30,9 +39,11 @@ async def handle_connection(ws):
         while True:
             time.sleep(0.02)
             message = await ws.recv()
-            if len(message) > 3000:
-                with open(image_path, "wb") as f:
-                    f.write(message)
+            print(len(message))
+            if len(message) > 5000:
+                 if is_valid_image(message):
+                    with open(image_path, "wb") as f:
+                        f.write(message)
     except websockets.exceptions.ConnectionClosed:
         print('websockets.exceptions.ConnectionClosed')
 
