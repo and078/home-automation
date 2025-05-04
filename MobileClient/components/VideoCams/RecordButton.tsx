@@ -9,13 +9,19 @@ interface RecordButtonProps {
 
 const RecordButton = (props: RecordButtonProps) => {
     const streamServerUrl = process.env.EXPO_PUBLIC_STREAM_API;
-    const [text, setText] = useState<string>("Record");
-    const [isOn, setIsOn]= useState<boolean>(false);
-    // const [recordingStatus, setRecordingStatus] = useState<boolean>(false);
-
     const startRecordingUrl = process.env.EXPO_PUBLIC_START_RECORDING;
     const stopRecordingUrl = process.env.EXPO_PUBLIC_STOP_RECORDING;
     const recordingStatusUrl = process.env.EXPO_PUBLIC_RECORDING_STATUS;
+
+    const colors = {
+        wait: "#0f505588",
+        recording: "#d6040f88"
+    }
+
+    const [status, setStatus] = useState({});
+    const [text, setText] = useState<string>("Record");
+    const [isOn, setIsOn]= useState<boolean>(false);
+    const [color, setColor] = useState<string>(colors.wait);
 
     const getRecordingStatus = async (url: string) => {
         if (recordingStatusUrl) {
@@ -31,8 +37,8 @@ const RecordButton = (props: RecordButtonProps) => {
 
     const startRecording = async (url: string, streamUrl: string) => {
         try {
-            const now = new Date();
-            const formattedDate = `${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}_${now.getDate()}-${now.getMonth() + 1}-${now.getFullYear()}`;
+            // const now = new Date();
+            // const formattedDate = `${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}_${now.getDate()}-${now.getMonth() + 1}-${now.getFullYear()}`;
 
             let data = await fetch(url, {
                 method: 'POST',
@@ -41,7 +47,7 @@ const RecordButton = (props: RecordButtonProps) => {
                 },
                 body: JSON.stringify({
                     stream_url: streamUrl,
-                    output_file: `./video-records/${props.name}_${formattedDate}.mp4`
+                    output_file: `./video-records/${props.name}_${Date.now()}.mp4`
                 })
             })
             let res = await data.json();
@@ -86,12 +92,18 @@ const RecordButton = (props: RecordButtonProps) => {
 
                 if (!isOn && startRecordingUrl) {
                     let go = await getRecordingStatus(fetchGetRecordingStatusUrl);
-                    if (!go) await startRecording(fetchStartRecordingUrl, streamUrl);
+                    if (!go) {
+                        await startRecording(fetchStartRecordingUrl, streamUrl);
+                        setColor(colors.recording);
+                    }
                 }
 
                 if (isOn && stopRecordingUrl) {
                     let go = await getRecordingStatus(fetchGetRecordingStatusUrl);
-                    if (go) await stopRecording(fetchStopRecordingUrl);
+                    if (go) {
+                        await stopRecording(fetchStopRecordingUrl);
+                        setColor(colors.wait);
+                    }
                 }
             }
         } catch (error) {
@@ -102,7 +114,17 @@ const RecordButton = (props: RecordButtonProps) => {
     return (
         <>
             <TouchableOpacity onPress={() => handlePress(isOn)}>
-                <View style={styles.container}>
+                <View style={{
+                    width: Dimensions.get('window').width / 4 - 15,
+                    height: Dimensions.get('window').height / 12,
+                    backgroundColor: color,
+                    borderRadius: Dimensions.get('window').height / 40,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    margin: 5,
+                    borderColor: "#14cee6cc",
+                    borderWidth: 1,
+                }}>
                     <Text style={styles.text}>{text}</Text>
                 </View>
             </TouchableOpacity>
@@ -113,18 +135,6 @@ const RecordButton = (props: RecordButtonProps) => {
 export default RecordButton
 
 const styles = StyleSheet.create({
-    container: {
-        width: Dimensions.get('window').width / 4 - 15,
-        height: Dimensions.get('window').height / 12,
-        backgroundColor: "#0f505588",
-        borderRadius: Dimensions.get('window').height / 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-        margin: 5,
-        borderColor: "#14cee6cc",
-        borderWidth: 1,
-    },
-
     text: {
         color: '#fff',
         fontSize: 10,

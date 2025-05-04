@@ -50,6 +50,13 @@
           }
         }
       ],
+      [
+        "expo-video",
+        {
+          "supportsBackgroundPlayback": true,
+          "supportsPictureInPicture": true
+        }
+      ],
       "expo-font"
     ],
     "experiments": {

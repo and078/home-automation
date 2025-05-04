@@ -23,7 +23,6 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'home-sharp' : 'home-outline'} color={color} size={24} />
           ),

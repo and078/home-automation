@@ -14,6 +14,7 @@ import add_toggle_device_route from './routes/toggle/add_toggle_device_route.js'
 import delete_toggle_device_router from './routes/toggle/delete_toggle_device_route.js';
 import test_stream_route from './routes/video/test_stream_route.js';
 import edit_toggle_device_route from './routes/toggle/edit_toggle_device_route.js';
+import video_records_route from './routes/video/video_records_route.js';
 import ticker from './services/fetchToggleDevicesTick.js';
 
 dotenv.config();
@@ -36,6 +37,7 @@ const app = express();
 	}
 })();
 
+app.use(video_records_route);
 app.use(devices_state_route);
 app.use(video_devices_route);
 app.use(start_stream_route);
