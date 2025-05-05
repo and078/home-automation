@@ -1,5 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import path from 'node:path';
+import serveIndex from 'serve-index';
 import { createBDPool } from './database/db.js';
 import devices_state_route from './routes/toggle/devices_state_route.js';
 import video_devices_route from './routes/video/video_devices_route.js';
@@ -37,6 +39,8 @@ const app = express();
 	}
 })();
 
+app.use('/video-records', express.static(path.join(process.cwd(), 'video-records')));
+app.use('/video-records', serveIndex(path.join(process.cwd(), 'video-records')));
 app.use(video_records_route);
 app.use(devices_state_route);
 app.use(video_devices_route);

@@ -47,7 +47,7 @@ const RecordButton = (props: RecordButtonProps) => {
                 },
                 body: JSON.stringify({
                     stream_url: streamUrl,
-                    output_file: `./video-records/${props.name}_${Date.now()}.mp4`
+                    output_file: `./video-records/${Date.now()}_${props.name}.mp4`
                 })
             })
             let res = await data.json();

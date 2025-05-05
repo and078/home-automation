@@ -1,8 +1,8 @@
 import { View, StyleSheet, Text, ImageBackground, Dimensions, StatusBar, TouchableOpacity, FlatList } from 'react-native'
 import image from '@/assets/images/house.png'
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Stack, useFocusEffect } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import UserInput from '@/components/DevicesManage/UserInput';
 
 interface deviceData {
@@ -35,7 +35,7 @@ const devices = () => {
 	return (
 		<View style={styles.container}>
 			<StatusBar hidden={false} backgroundColor="black" barStyle="light-content" />
-			<ImageBackground source={image} style={styles.image}>
+			<ImageBackground source={image} style={styles.image}>	
 			<FlatList
 				data={devices}
 				numColumns={1}

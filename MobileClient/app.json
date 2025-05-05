@@ -3,6 +3,10 @@
     "androidStatusBar": {
       "hidden": false
     },
+    "androidNavigationBar": {
+      "backgroundColor": "#000000",
+      "barStyle": "light-content"
+    },
     "doctor": {
       "reactNativeDirectoryCheck": {
         "exclude": [
