@@ -101,10 +101,12 @@ const styles = StyleSheet.create({
         margin: 10,
     },
     textInput: {
+        width: Dimensions.get('window').width - 15,
+        height: Dimensions.get('window').height / 15,
         backgroundColor: '#0f505588',
-        borderRadius: 10,
+        borderRadius: Dimensions.get('window').height / 40,
         borderColor: "#14cee6cc",
-        borderWidth: 2,
+        borderWidth: 1,
         color: 'white'
     },
     btns: {
