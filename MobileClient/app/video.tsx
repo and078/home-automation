@@ -72,7 +72,8 @@ export const VideoPage = () => {
   const getCameraRecords = (camsRecords: Array<camera_with_records>, cameraName: string) => {
     for(let i = 0; i < camsRecords.length; i++) {
       if(camsRecords[i].name === cameraName) {
-        setCameraRecords(camsRecords[i].records)
+        setCameraRecords(camsRecords[i].records);
+        break;
       }
     }
   } 

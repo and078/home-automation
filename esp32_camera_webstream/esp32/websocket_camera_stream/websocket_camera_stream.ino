@@ -30,13 +30,13 @@
 const char* ssid = "ssid";    // CHANGE HERE
 const char* password = "password";  // CHANGE HERE
 
-IPAddress local_IP(192, 168, 1, 210);  // Set your desired IP
-IPAddress gateway(192, 168, 1, 1);     // Set your network gateway
+IPAddress local_IP(192, 168, 100, 210);  // Set your desired IP
+IPAddress gateway(192, 168, 100, 1);     // Set your network gateway
 IPAddress subnet(255, 255, 255, 0);    // Set your subnet mask
 IPAddress primaryDNS(8, 8, 8, 8);      // Optional: Primary DNS
 IPAddress secondaryDNS(8, 8, 4, 4);    // Optional: Secondary DNS
 
-const char* websockets_server_host = "192.168.1.224";  //CHANGE HERE
+const char* websockets_server_host = "192.168.100.224";  //CHANGE HERE
 const uint16_t websockets_server_port = 6000;          // OPTIONAL CHANGE
 
 camera_fb_t* fb = NULL;
